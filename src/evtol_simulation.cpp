@@ -15,8 +15,9 @@ Main simulation file
 
 constexpr uint32_t NUM_VEHICLES = 20;
 constexpr uint32_t NUM_CHARGERS = 3;
+constexpr double SIMULATION_TIME_HRS = 3.0;
 
-struct VehicleType
+struct Vehicle_type
 {
     /// vehicle name (same as "company name" in this case, since each company only has one vehicle
     /// type)
@@ -30,7 +31,7 @@ struct VehicleType
     const double prob_fault_per_hr;
 
     // constructor
-    Vehicle(
+    Vehicle_type(
             std::string name_,
             double cruise_speed_mph_,
             double battery_capacity_kwh_,
@@ -47,42 +48,30 @@ struct VehicleType
         , max_passenger_cnt{passenger_cnt_}
         , prob_fault_per_hr{prob_fault_per_hr_}
     {}
-}
+};
 
-class Vehicle
+struct Vehicle_stats
 {
-public:
-    // Vehicle constants
-    // TODO: move to its own struct
-    const double cruise_speed_mph;
-    const double battery_capacity_kwh;
-    const double time_to_charge_hrs;
-    const double energy_in_cruise_kwh_per_mile;
-    const uint16_t max_passenger_cnt;
-    /// mean probability of faults per hour
-    const double prob_fault_per_hr;
-
     // // Vehicle stats
     // // TODO: Move to its own struct
     // avg_flight_time_per_flight_hrs;
     // avg_dist_per_flight_miles;
     // avg_
 
+};
+
+class Vehicle
+{
+public:
     // constructor
-    Vehicle(double cruise_speed_mph_,
-            double battery_capacity_kwh_,
-            double time_to_charge_hrs_,
-            double energy_used_kwh_per_mile_,
-            uint16_t passenger_cnt_,
-            double prob_fault_per_hr_
-        )
-        : cruise_speed_mph{cruise_speed_mph_}
-        , battery_capacity_kwh{battery_capacity_kwh_}
-        , time_to_charge_hrs{time_to_charge_hrs_}
-        , energy_in_cruise_kwh_per_mile{energy_used_kwh_per_mile_}
-        , max_passenger_cnt{passenger_cnt_}
-        , prob_fault_per_hr{prob_fault_per_hr_}
+    Vehicle(Vehicle_type vehicle_type)
+        : _vehicle_type{vehicle_type}
     {}
+
+private:
+    Vehicle_type _vehicle_type;
+    Vehicle_stats _vehicle_stats;
+
 };
 
 // class Company
@@ -116,21 +105,15 @@ public:
     // constructor
     Simulation()
     {
-        // _initialize_uniform_int_rng();
+        // _initialize_uniform_int_rng();//////////
     }
 
-    // TODO: add error handling to check if a certain type (name) was already added
-    void add_vehicle_type(
-        const char* name,
-        double cruise_speed_mph_,
-        double battery_capacity_kwh_,
-        double time_to_charge_hrs_,
-        double energy_used_kwh_per_mile_,
-        uint16_t passenger_cnt_,
-        double prob_fault_per_hr_)
+    // TODO: add error handling to check if a certain type (name) was already added. Do this in
+    // O(1) time by changing the `_vehicle_types` type to an unordered_map instead of a vector.
+    // Update all other parts of the code as necessary for this type change.
+    void add_vehicle_type(Vehicle_type vehicle_type)
     {
-        /////////////
-
+        _vehicle_types.push_back(vehicle_type);
     }
 
     void add_random_vehicle()
@@ -139,9 +122,12 @@ public:
         // of this type
         std::uniform_int_distribution<uint32_t> distribution(0, _vehicle_types.size() - 1);
         uint32_t i = distribution(_generator);
-        Vehicle random_vehicle_type{_vehicle_types[i]};
+        Vehicle random_vehicle{_vehicle_types[i]};
 
-        _vehicles.push_back(random_vehicle_type);
+        _vehicles.push_back(random_vehicle);
+
+        // debugging /////////////
+        std::cout << "i = " << i << "\n";
     }
 
     void populate_vehicles(uint32_t num_vehicles)
@@ -164,14 +150,13 @@ public:
     // }
 
 private:
-    std::vector<VehicleType> _vehicle_types;
+    std::vector<Vehicle_type> _vehicle_types;
     std::vector<Vehicle> _vehicles;
     uint32_t _num_chargers = 0;
 
-    static const std::array<std::string>
-
+    std::random_device _random_device;
     /// Standard mersenne_twister_engine used for random number generation
-    std::mt19937 _generator{std::random_device};
+    std::mt19937 _generator{_random_device()};
 
     // // Initialize the uniform integer random number generator
     // void _initialize_uniform_int_rng()
@@ -190,17 +175,24 @@ int main()
     // Add the various company vehicle types and stats
     // TODO: store and read these from a .yaml file.
     // clang-format off
-    simulation.add_vehicle_type("Alpha",    120, 320, 0.6,  1.6, 4, 0.25);
-    simulation.add_vehicle_type("Bravo",    100, 100, 0.2,  1.5, 5, 0.10);
-    simulation.add_vehicle_type("Charlie",  160, 220, 0.8,  2.2, 3, 0.05);
-    simulation.add_vehicle_type("Delta",    90,  120, 0.62, 0.8, 2, 0.22);
-    simulation.add_vehicle_type("Echo",     30,  150, 0.3,  5.8, 2, 0.61);
+    simulation.add_vehicle_type({"Alpha",    120, 320, 0.6,  1.6, 4, 0.25});
+    simulation.add_vehicle_type({"Bravo",    100, 100, 0.2,  1.5, 5, 0.10});
+    simulation.add_vehicle_type({"Charlie",  160, 220, 0.8,  2.2, 3, 0.05});
+    simulation.add_vehicle_type({"Delta",    90,  120, 0.62, 0.8, 2, 0.22});
+    simulation.add_vehicle_type({"Echo",     30,  150, 0.3,  5.8, 2, 0.61});
     // clang-format on
 
+    // simulation.print_vehicle_types();/////////
+
     simulation.set_num_chargers(NUM_CHARGERS);
+    // simulation.set_simulation_time(SIMULATION_TIME_HRS);//////////
 
     // Randomly populate the correct number of vehicles
     simulation.populate_vehicles(NUM_VEHICLES);
+
+    //////////
+    // simulation.run();
+    // simulation.print_results();
 
     return 0;
 }
