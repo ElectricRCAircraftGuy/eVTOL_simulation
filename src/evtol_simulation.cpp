@@ -1,5 +1,7 @@
 /*
 Main simulation file
+
+Todo: break apart into multiple modules, each with a header and source file.
 */
 
 // C++ includes
@@ -25,8 +27,8 @@ struct Vehicle_type
     const double cruise_speed_mph;
     const double battery_capacity_kwh;
     const double time_to_charge_hrs;
-    const double energy_in_cruise_kwh_per_mile;
-    const uint16_t max_passenger_cnt;
+    const double energy_used_kwh_per_mile;
+    const uint16_t passenger_cnt;
     /// mean probability of faults per hour
     const double prob_fault_per_hr;
 
@@ -44,10 +46,23 @@ struct Vehicle_type
         , cruise_speed_mph{cruise_speed_mph_}
         , battery_capacity_kwh{battery_capacity_kwh_}
         , time_to_charge_hrs{time_to_charge_hrs_}
-        , energy_in_cruise_kwh_per_mile{energy_used_kwh_per_mile_}
-        , max_passenger_cnt{passenger_cnt_}
+        , energy_used_kwh_per_mile{energy_used_kwh_per_mile_}
+        , passenger_cnt{passenger_cnt_}
         , prob_fault_per_hr{prob_fault_per_hr_}
     {}
+
+    void print() const
+    {
+        printf("%-10s %8.2f %8.2f %6.2f %6.2f %4u %6.2f\n",
+            name.c_str(),
+            cruise_speed_mph,
+            battery_capacity_kwh,
+            time_to_charge_hrs,
+            energy_used_kwh_per_mile,
+            passenger_cnt,
+            prob_fault_per_hr
+        );
+    }
 };
 
 struct Vehicle_stats
@@ -125,9 +140,6 @@ public:
         Vehicle random_vehicle{_vehicle_types[i]};
 
         _vehicles.push_back(random_vehicle);
-
-        // debugging /////////////
-        std::cout << "i = " << i << "\n";
     }
 
     void populate_vehicles(uint32_t num_vehicles)
@@ -141,6 +153,15 @@ public:
     void set_num_chargers(uint32_t num_chargers)
     {
         _num_chargers = num_chargers;
+    }
+
+    void print_vehicle_types()
+    {
+        std::cout << "Vehicle types:" << "\n";
+        for (const Vehicle_type& vehicle_type : _vehicle_types)
+        {
+            vehicle_type.print();
+        }
     }
 
 
@@ -182,7 +203,7 @@ int main()
     simulation.add_vehicle_type({"Echo",     30,  150, 0.3,  5.8, 2, 0.61});
     // clang-format on
 
-    // simulation.print_vehicle_types();/////////
+    simulation.print_vehicle_types();
 
     simulation.set_num_chargers(NUM_CHARGERS);
     // simulation.set_simulation_time(SIMULATION_TIME_HRS);//////////
