@@ -1,0 +1,5 @@
+# Temporary LibreOffice Writer & Calc files
+*.odt#
+*.ods#
+
+bin/
