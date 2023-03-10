@@ -12,6 +12,7 @@ Provided Assumptions
   charger after running out of battery power.
 
 Additional Assumptions:
+- faults can only occur during **flying**, NOT during waiting for a charger, or charging.
 - faults don't make the vehicle stop flying; it keeps flying; you just count the faults
 - when the plane runs out of fuel it is instantly at the charger without adding distance
 - only charge when the battery is empty (at 0% State of Charge (SoC))
@@ -164,18 +165,24 @@ struct Vehicle_stats
 
     uint32_t num_faults = 0;
 
-    Vehicle_state vehicle_state = Vehicle_state::FLYING;
+    // other info
+
+    /// how full the battery currently is, this flight
+    double battery_state_of_charge_kwh;
+
+    Vehicle_state state = Vehicle_state::FLYING;
+    Vehicle_state last_state = Vehicle_state::CHARGING;
 };
 
 class Vehicle
 {
 public:
     // constructor
-    Vehicle(Vehicle_type* vehicle_type_)
-    : vehicle_type{vehicle_type_}
+    Vehicle(Vehicle_type* type_)
+    : type{type_}
     {}
 
-    Vehicle_type* vehicle_type; // ptr to the vehicle type this vehicle is
+    Vehicle_type* type; // ptr to the vehicle type this vehicle is
     Vehicle_stats stats;
 private:
 };
@@ -245,15 +252,9 @@ public:
         for (size_t i = 0; i < _vehicles.size(); i++)
         {
             printf("%3lu: %s\n",
-                i, _vehicles[i].vehicle_type->name.c_str());
+                i, _vehicles[i].type->name.c_str());
         }
         printf("\n\n");
-    }
-
-    /// Iterate one time step forward in the simulation for all vehicles
-    void iterate()
-    {
-
     }
 
     /// Run the whole simulation for all vehicles
@@ -261,6 +262,16 @@ public:
     {
         uint32_t num_steps = _simulation_duration_hrs/_simulation_step_size_hrs;
         DEBUG_PRINTF("num_steps =%u\n", num_steps);
+
+        // for all time steps
+        for (uint32_t i = 0; i < num_steps; i++)
+        {
+            // for all vehicles
+            for (Vehicle& vehicle : _vehicles)
+            {
+                iterate(&vehicle);
+            }
+        }
     }
 
     /// Print required simulation results
@@ -286,6 +297,63 @@ private:
     std::random_device _random_device;
     /// Standard mersenne_twister_engine
     std::mt19937 _generator{_random_device()};
+
+    /// Random number generator of `double` numbers from 0.0 to 1.0.
+    std::uniform_real_distribution<double> _dist_0_to_1{0.0, 1.0};
+
+    /// Check for a simulated fault this time step
+    void check_for_fault(Vehicle* vehicle)
+    {
+        double random_num = _dist_0_to_1(_generator);
+        double prob_fault_this_iteration
+            = vehicle->type->prob_fault_per_hr*_simulation_step_size_hrs;
+        if (random_num <= prob_fault_this_iteration)
+        {
+            (vehicle->stats.num_faults)++;
+        }
+    }
+
+    /// Iterate one time step forward in the simulation for one vehicle
+    void iterate(Vehicle* vehicle)
+    {
+        switch (vehicle->stats.state)
+        {
+        case Vehicle_state::FLYING:
+        {
+            if (vehicle->stats.last_state == Vehicle_state::CHARGING)
+            {
+                // We just started a new flight, so increment the flight counter
+                vehicle->stats.last_state = Vehicle_state::FLYING;
+                (vehicle->stats.num_flights)++;
+            }
+
+            vehicle->stats.flight_time_hrs += _simulation_step_size_hrs;
+
+            double distance_this_step_miles =
+                vehicle->type->cruise_speed_mph*_simulation_step_size_hrs;
+            vehicle->stats.distance_traveled_miles += distance_this_step_miles;
+
+            check_for_fault(vehicle);
+
+            // check for conditions of next state, which are that if the vehicle is out of battery
+            // (it has traveled its max range in this case), then it must recharge or get in line
+            // to recharge
+
+
+            // if
+
+
+
+
+
+            break;
+        }
+        case Vehicle_state::WAITING_FOR_CHARGER:
+            break;
+        case Vehicle_state::CHARGING:
+            break;
+        }
+    }
 };
 
 int main()
