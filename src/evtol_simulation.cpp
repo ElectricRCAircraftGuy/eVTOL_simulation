@@ -31,6 +31,19 @@ Additional Assumptions:
 #include <vector>
 
 
+#define DEBUG // comment this out to disable debug prints
+
+/// Debug printf function.
+/// See https://stackoverflow.com/a/67667132/4561887
+#ifdef DEBUG
+    #define DEBUG_PRINTF(...) printf("DEBUG: " __VA_ARGS__)
+#else
+    #define DEBUG_PRINTF(...) \
+        do                    \
+        {                     \
+        } while (0)
+#endif
+
 #define SECONDS_PER_HR 3600UL
 
 // TODO: read these as input arguments to `main()`, to rapidly run a variety of simulations.
@@ -178,6 +191,7 @@ public:
         : _num_chargers{num_chargers}
         , _simulation_duration_hrs{simulation_duration_hrs}
         , _simulation_step_size_hrs{simulation_step_size_hrs}
+        , _num_chargers_available{_num_chargers}
     {
     }
 
@@ -236,6 +250,25 @@ public:
         printf("\n\n");
     }
 
+    /// Iterate one time step forward in the simulation for all vehicles
+    void iterate()
+    {
+
+    }
+
+    /// Run the whole simulation for all vehicles
+    void run()
+    {
+        uint32_t num_steps = _simulation_duration_hrs/_simulation_step_size_hrs;
+        DEBUG_PRINTF("num_steps =%u\n", num_steps);
+    }
+
+    /// Print required simulation results
+    void print_results()
+    {
+        ////////
+    }
+
 private:
     std::vector<Vehicle_type> _vehicle_types;
     std::vector<Vehicle> _vehicles;
@@ -245,6 +278,8 @@ private:
     const uint32_t _num_chargers;
     const double _simulation_duration_hrs;
     const double _simulation_step_size_hrs;
+
+    uint32_t _num_chargers_available;
 
     // For random number generation
 
@@ -274,11 +309,10 @@ int main()
 
     // Randomly populate the correct number of vehicles
     simulation.populate_vehicles(NUM_VEHICLES);
-    simulation.print_vehicles(); /////// index and name only
+    simulation.print_vehicles();
 
-    //////////
-    // simulation.run();
-    // simulation.print_results();
+    simulation.run();
+    simulation.print_results();
 
     return 0;
 }
