@@ -26,6 +26,7 @@ Additional Assumptions:
 
 // C++ includes
 #include <iostream>
+#include <queue>
 #include <random>
 #include <string>
 #include <unordered_set>
@@ -180,7 +181,10 @@ public:
     // constructor
     Vehicle(Vehicle_type* type_)
     : type{type_}
-    {}
+    {
+        // start the vehicle out with a fully-charged battery
+        stats.battery_state_of_charge_kwh = type->battery_capacity_kwh;
+    }
 
     Vehicle_type* type; // ptr to the vehicle type this vehicle is
     Vehicle_stats stats;
@@ -285,6 +289,8 @@ private:
     std::vector<Vehicle> _vehicles;
     /// Used to keep track of whether or not a particular vehicle type has already been added
     std::unordered_set<std::string> _vehicle_type_names;
+    /// FIFO queue to store the line of cars waiting to charge next
+    // std::queue<Vehicle* vehicle> _charge_queue;////////////
 
     const uint32_t _num_chargers;
     const double _simulation_duration_hrs;
@@ -313,9 +319,27 @@ private:
         }
     }
 
+    /// Start charging now if a charger is free; otherwise, get in line to charge
+    void try_to_charge(Vehicle* vehicle)
+    {
+        if (_num_chargers_available > 0)
+        {
+            // start charging
+            _num_chargers_available--;
+            vehicle->stats.state = Vehicle_state::CHARGING;
+            return;
+        }
+
+        // get in the charge line
+        // _charge_queue.push(vehicle);////////////
+        vehicle->stats.state = Vehicle_state::WAITING_FOR_CHARGER;
+    }
+
     /// Iterate one time step forward in the simulation for one vehicle
     void iterate(Vehicle* vehicle)
     {
+        Vehicle_state state_at_start = vehicle->stats.state;
+
         switch (vehicle->stats.state)
         {
         case Vehicle_state::FLYING:
@@ -323,7 +347,6 @@ private:
             if (vehicle->stats.last_state == Vehicle_state::CHARGING)
             {
                 // We just started a new flight, so increment the flight counter
-                vehicle->stats.last_state = Vehicle_state::FLYING;
                 (vehicle->stats.num_flights)++;
             }
 
@@ -339,20 +362,34 @@ private:
             // (it has traveled its max range in this case), then it must recharge or get in line
             // to recharge
 
+            double energy_used_this_iteration_kwh
+                = distance_this_step_miles*vehicle->type->energy_used_kwh_per_mile;
+            vehicle->stats.battery_state_of_charge_kwh -= energy_used_this_iteration_kwh;
 
-            // if
-
-
-
-
+            if (vehicle->stats.battery_state_of_charge_kwh <= 0)
+            {
+                try_to_charge();
+            }
 
             break;
         }
         case Vehicle_state::WAITING_FOR_CHARGER:
-            break;
-        case Vehicle_state::CHARGING:
+        {
+            try_to_charge();
             break;
         }
+        case Vehicle_state::CHARGING:
+        {
+            // if you're full (ie: you've charged **long enough**, based on how the description of
+            // this simulation is written), get off the charger and start flying again!
+
+            if ()
+
+            break;
+        }
+        }
+
+        vehicle->stats.last_state = state_at_start;
     }
 };
 
