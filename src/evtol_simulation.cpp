@@ -81,6 +81,8 @@ struct Vehicle_type
     /// mean probability of faults per second
     const double prob_fault_per_sec;
 
+    Vehicle_type_stats stats;
+
     // constructor
     Vehicle_type(
             std::string name_,
@@ -109,11 +111,8 @@ struct Vehicle_type
     void print() const
     {
         printf(
-            "%-10s\n"
-            "Primary values:\n"
-            "%8.2f %8.2f %6.2f %6.2f %4u %6.2f\n"
-            "Derived values:\n"
-            "%6.2f, %6.2f, %6.2f, %6.2f\n",
+            "%-10s Primary values: %8.2f %8.2f %6.2f %6.8f %4u %6.2f\n"
+            "           Derived values: %8.2f %8.2f %6.2f %6.8f\n\n",
             name.c_str(),
             // primary values
             cruise_speed_mph,
@@ -225,12 +224,16 @@ public:
 
     void print_vehicles()
     {
-        printf("Vehicles:\n");
+        printf(
+            "Vehicles:\n"
+            "  i  name\n"
+            "----------\n");
         for (size_t i = 0; i < _vehicles.size(); i++)
         {
-            printf("%3lu: %s\n", i, _vehicles[i].vehicle_type->name.c_str());
+            printf("%3lu: %s\n",
+                i, _vehicles[i].vehicle_type->name.c_str());
         }
-        printf("\n");
+        printf("\n\n");
     }
 
 private:
