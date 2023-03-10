@@ -3,3 +3,8 @@
 *.ods#
 
 bin/
+
+# ignore Eclipse project files
+/.cproject
+/.project
+/.settings/
