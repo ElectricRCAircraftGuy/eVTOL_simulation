@@ -1,12 +1,25 @@
 /*
 Main simulation file
 
-Todo: break apart into multiple modules, each with a header and source file.
+Todo:
+1. [ ] break apart into multiple modules, each with a header and source file.
+1. [ ] add setters and getters, perhaps
 
-Assumptions:
+Provided Assumptions
+- Each vehicle starts the simulation with a fully-charged battery
+- Each vehicle instantaneously reaches Cruise Speed
+- Each vehicle is airborne for the full use of the battery, and is immediately in line for the
+  charger after running out of battery power.
+
+Additional Assumptions:
 - faults don't make the vehicle stop flying; it keeps flying; you just count the faults
 - when the plane runs out of fuel it is instantly at the charger without adding distance
 - only charge when the battery is empty (at 0% State of Charge (SoC))
+- "the probability of fault per hour" statistic should be evenly spread across the time steps, to
+  provide a more-realistic "real-life" simulation, providing for the ability to run this simulation
+  "real time" if you wanted to train ground support personal to actually respond to the emergencies
+  and operations at the predicted real-time cadence.
+- once a vehicle gets on the charger, it will stay there until full
 
 */
 
@@ -17,27 +30,32 @@ Assumptions:
 #include <unordered_set>
 #include <vector>
 
-namespace evtol_simulation
-{
 
-// C includes
-//////
-// #include <cstdint>  // For `uint8_t`, `int8_t`, etc.
-// #include <cstdio>   // For `printf()`
+#define SECONDS_PER_HR 3600UL
 
-// TODO: read these as input arguments to `main()`.
+// TODO: read these as input arguments to `main()`, to rapidly run a variety of simulations.
 constexpr uint32_t NUM_VEHICLES = 20;
 constexpr uint32_t NUM_CHARGERS = 3;
 constexpr double SIMULATION_DURATION_HRS = 3.0;
+constexpr double SIMULATION_STEP_SIZE_HRS = 1.0/(double)SECONDS_PER_HR; /// 1 second time step size
+
 
 struct Vehicle_type_stats
 {
-    ////////
-    // avg_flight_time_per_flight_hrs;
-    // avg_dist_per_flight_miles;
-    // avg_
-    uint32_t total_num_flights
-    /////// add the rest
+    // required to publish
+    double avg_flight_time_per_flight_hrs = 0;
+    double avg_distance_per_flight_miles = 0;
+    double avg_charge_time_per_session_hrs = 0;
+    uint32_t total_num_faults = 0;
+    uint32_t total_num_passenger_miles = 0;
+
+    // extras
+    // - required to calculate the values above
+    uint32_t total_num_flights = 0;
+    double total_flight_time_hrs = 0;
+    double total_distance_miles = 0;
+    uint32_t total_num_charges = 0;
+    double total_charge_time_hrs = 0;
 };
 
 struct Vehicle_type
@@ -57,9 +75,11 @@ struct Vehicle_type
 
     // derived values
 
-    //////
+    const double max_range_miles; // on a single charge
+    const double max_flight_time_hrs; // on a single charge
     const double cruise_power_kw;
-    const double range_miles;
+    /// mean probability of faults per second
+    const double prob_fault_per_sec;
 
     // constructor
     Vehicle_type(
@@ -72,28 +92,46 @@ struct Vehicle_type
             double prob_fault_per_hr_
         )
         : name{name_}
+        // primary values
         , cruise_speed_mph{cruise_speed_mph_}
         , battery_capacity_kwh{battery_capacity_kwh_}
         , time_to_charge_hrs{time_to_charge_hrs_}
         , energy_used_kwh_per_mile{energy_used_kwh_per_mile_}
         , passenger_cnt{passenger_cnt_}
         , prob_fault_per_hr{prob_fault_per_hr_}
+        // derived values
+        , max_range_miles{battery_capacity_kwh/energy_used_kwh_per_mile}
+        , max_flight_time_hrs{max_range_miles/cruise_speed_mph}
+        , cruise_power_kw{battery_capacity_kwh/max_flight_time_hrs}
+        , prob_fault_per_sec{prob_fault_per_hr/(double)SECONDS_PER_HR}
     {}
 
     void print() const
     {
-        printf("%-10s %8.2f %8.2f %6.2f %6.2f %4u %6.2f\n",
+        printf(
+            "%-10s\n"
+            "Primary values:\n"
+            "%8.2f %8.2f %6.2f %6.2f %4u %6.2f\n"
+            "Derived values:\n"
+            "%6.2f, %6.2f, %6.2f, %6.2f\n",
             name.c_str(),
+            // primary values
             cruise_speed_mph,
             battery_capacity_kwh,
             time_to_charge_hrs,
             energy_used_kwh_per_mile,
             passenger_cnt,
-            prob_fault_per_hr
+            prob_fault_per_hr,
+            // derived values
+            max_range_miles,
+            max_flight_time_hrs,
+            cruise_power_kw,
+            prob_fault_per_sec
         );
     }
 };
 
+/// State machine for each vehicle
 enum class Vehicle_state
 {
     FLYING = 0,
@@ -103,6 +141,8 @@ enum class Vehicle_state
 
 struct Vehicle_stats
 {
+    // cumulative stats
+
     uint32_t num_flights = 0;
     double flight_time_hrs = 0;
     double distance_traveled_miles = 0;
@@ -119,60 +159,33 @@ class Vehicle
 {
 public:
     // constructor
-    Vehicle(size_t i_vehicle_type, const std::vector<Vehicle_type>& vehicle_types)
-    : _i_vehicle_type{i_vehicle_type}
+    Vehicle(Vehicle_type* vehicle_type_)
+    : vehicle_type{vehicle_type_}
     {}
 
-    //////// move to Simulation class?
-    const Vehicle_type& get_vehicle_type()
-    {
-        return _vehicle_types[_i_vehicle_type];
-    }
-
+    Vehicle_type* vehicle_type; // ptr to the vehicle type this vehicle is
+    Vehicle_stats stats;
 private:
-    /// for rapid O(1) mapping to the vehicle type
-    const std::vector<Vehicle_type>& _vehicle_types;
-    /// an index to map to the vehicle type
-    const size_t _i_vehicle_type;
-
-    Vehicle_stats _stats;
 };
-
-// class Company
-// {
-// public:
-//     // constructor
-//     Company(const char* name)
-//         : _name{name}
-//         {
-//         }
-
-//     add_vehicle(Vehicle vehicle)
-//     {
-//         _vehicles.push_back(vehicle);
-//     }
-
-// private:
-//     std::string _name;
-//     std::vector<Vehicle> _vehicles;
-// };
-
-// class Charger
-// {
-
-// }
 
 class Simulation
 {
 public:
-
     // constructor
-    Simulation()
+    Simulation(
+        uint32_t num_chargers,
+        double simulation_duration_hrs,
+        double simulation_step_size_hrs)
+        : _num_chargers{num_chargers}
+        , _simulation_duration_hrs{simulation_duration_hrs}
+        , _simulation_step_size_hrs{simulation_step_size_hrs}
     {
     }
 
     // returns true if successful and false otherwise
-    // TODO: improve error handling; ex: be returning enums instead
+    // TODO: improve error handling; ex: return enums instead. Ex: see `enum class Error_code`
+    // and `struct Error` in my code here:
+    // https://github.com/ElectricRCAircraftGuy/eRCaGuy_hello_world/blob/master/cpp/curl_lib_WIP.h#L49-L87
     bool add_vehicle_type(Vehicle_type vehicle_type)
     {
         // don't add the same vehicle type more than once
@@ -187,28 +200,18 @@ public:
         return true;
     }
 
-    void add_random_vehicle() //////// refactor: make private; move the rng stuff to populate_vehicles
-    {
-        // get a random number from index 0 to "number of vehicle types" - 1, and then add a vehicle
-        // of this type
-        std::uniform_int_distribution<uint32_t> distribution(0, _vehicle_types.size() - 1);
-        uint32_t i = distribution(_generator);
-        Vehicle random_vehicle{_vehicle_types[i]};
-
-        _vehicles.push_back(random_vehicle);
-    }
-
     void populate_vehicles(uint32_t num_vehicles)
     {
+        std::uniform_int_distribution<uint32_t> distribution(0, _vehicle_types.size() - 1);
+
         for (uint32_t i = 0; i < num_vehicles; i++)
         {
-            add_random_vehicle();
+            // get a random number from the index range in the distribution, and then add a vehicle
+            // of this type
+            uint32_t i_vehicle_type = distribution(_generator);
+            Vehicle random_vehicle{&_vehicle_types[i_vehicle_type]};
+            _vehicles.push_back(random_vehicle);
         }
-    }
-
-    void set_num_chargers(uint32_t num_chargers)
-    {
-        _num_chargers = num_chargers;
     }
 
     void print_vehicle_types()
@@ -222,22 +225,23 @@ public:
 
     void print_vehicles()
     {
-        /////////
+        printf("Vehicles:\n");
+        for (size_t i = 0; i < _vehicles.size(); i++)
+        {
+            printf("%3lu: %s\n", i, _vehicles[i].vehicle_type->name.c_str());
+        }
+        printf("\n");
     }
-
-
-    // void add_charger()
-    // {
-    //     _chargers.push_back()
-    // }
 
 private:
     std::vector<Vehicle_type> _vehicle_types;
     std::vector<Vehicle> _vehicles;
-    uint32_t _num_chargers = 0;
-
     /// Used to keep track of whether or not a particular vehicle type has already been added
     std::unordered_set<std::string> _vehicle_type_names;
+
+    const uint32_t _num_chargers;
+    const double _simulation_duration_hrs;
+    const double _simulation_step_size_hrs;
 
     // For random number generation
 
@@ -250,10 +254,11 @@ int main()
 {
     std::cout << "Running simulation\n\n";
 
-    Simulation simulation{NUM_CHARGERS, SIMULATION_DURATION_HRS};//// add this
+    Simulation simulation{NUM_CHARGERS, SIMULATION_DURATION_HRS, SIMULATION_STEP_SIZE_HRS};
 
     // Add the various company vehicle types and stats
-    // TODO: store and read these from a .yaml file.
+    // TODO: store and read these from a .yaml file. Specify the yaml file path as an argument to
+    // `main()`. Then read them in from the yaml file instead.
     // clang-format off
     simulation.add_vehicle_type({"Alpha",    120, 320, 0.6,  1.6, 4, 0.25});
     simulation.add_vehicle_type({"Bravo",    100, 100, 0.2,  1.5, 5, 0.10});
@@ -263,9 +268,6 @@ int main()
     // clang-format on
 
     simulation.print_vehicle_types();
-
-    simulation.set_num_chargers(NUM_CHARGERS);
-    // simulation.set_simulation_duration(SIMULATION_DURATION_HRS);//////////
 
     // Randomly populate the correct number of vehicles
     simulation.populate_vehicles(NUM_VEHICLES);
@@ -277,8 +279,3 @@ int main()
 
     return 0;
 }
-
-//////add state machine to the vehicle: fly, wait for charger, charge, repeat
-
-
-} // namespace evtol_simulation
