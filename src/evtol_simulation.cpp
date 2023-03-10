@@ -15,6 +15,7 @@ Todo: break apart into multiple modules, each with a header and source file.
 // #include <cstdint>  // For `uint8_t`, `int8_t`, etc.
 // #include <cstdio>   // For `printf()`
 
+// TODO: read these as input arguments to `main()`.
 constexpr uint32_t NUM_VEHICLES = 20;
 constexpr uint32_t NUM_CHARGERS = 3;
 constexpr double SIMULATION_TIME_HRS = 3.0;
@@ -120,7 +121,6 @@ public:
     // constructor
     Simulation()
     {
-        // _initialize_uniform_int_rng();//////////
     }
 
     // TODO: add error handling to check if a certain type (name) was already added. Do this in
@@ -131,7 +131,7 @@ public:
         _vehicle_types.push_back(vehicle_type);
     }
 
-    void add_random_vehicle()
+    void add_random_vehicle() //////// refactor: make private; move the rng stuff to populate_vehicles
     {
         // get a random number from index 0 to "number of vehicle types" - 1, and then add a vehicle
         // of this type
@@ -164,6 +164,11 @@ public:
         }
     }
 
+    void print_vehicles()
+    {
+        /////////
+    }
+
 
     // void add_charger()
     // {
@@ -175,16 +180,11 @@ private:
     std::vector<Vehicle> _vehicles;
     uint32_t _num_chargers = 0;
 
-    std::random_device _random_device;
-    /// Standard mersenne_twister_engine used for random number generation
-    std::mt19937 _generator{_random_device()};
+    // For random number generation
 
-    // // Initialize the uniform integer random number generator
-    // void _initialize_uniform_int_rng()
-    // {
-    //     std::random_device dev;
-    //     _generator = std::mt19937(dev);
-    // }
+    std::random_device _random_device;
+    /// Standard mersenne_twister_engine
+    std::mt19937 _generator{_random_device()};
 };
 
 int main()
@@ -210,6 +210,7 @@ int main()
 
     // Randomly populate the correct number of vehicles
     simulation.populate_vehicles(NUM_VEHICLES);
+    simulation.print_vehicles(); /////// index and name only
 
     //////////
     // simulation.run();
@@ -217,3 +218,5 @@ int main()
 
     return 0;
 }
+
+//////state machine: fly, wait for charger, charge, repeat

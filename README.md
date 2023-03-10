@@ -18,7 +18,18 @@ sudo apt install ccache
 curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
 
 
+
+
 # build and run gtest unit tests
 
 # build and run the simulation
+```
+
+
+```bash
+# build and run
+./build.sh
+
+# just run
+bin/evtol_simulation
 ```
