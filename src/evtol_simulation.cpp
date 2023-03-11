@@ -21,12 +21,13 @@ Additional Assumptions:
   "real time" if you wanted to train ground support personal to actually respond to the emergencies
   and operations at the predicted real-time cadence.
 - once a vehicle gets on the charger, it will stay there until full
+- each vehicle is fully loaded with passengers every flight
 
 */
 
 // C++ includes
 #include <iostream>
-#include <queue>
+// #include <queue> ///////////////
 #include <random>
 #include <string>
 #include <unordered_set>
@@ -62,7 +63,7 @@ struct Vehicle_type_stats
     double avg_distance_per_flight_miles = 0;
     double avg_charge_time_per_session_hrs = 0;
     uint32_t total_num_faults = 0;
-    uint32_t total_num_passenger_miles = 0;
+    double total_num_passenger_miles = 0;
 
     // extras
     // - required to calculate the values above
@@ -71,6 +72,7 @@ struct Vehicle_type_stats
     double total_distance_miles = 0;
     uint32_t total_num_charges = 0;
     double total_charge_time_hrs = 0;
+    uint32_t num_vehicles = 0; /// the total number of vehicles of this type
 };
 
 struct Vehicle_type
@@ -84,7 +86,7 @@ struct Vehicle_type
     const double battery_capacity_kwh;
     const double time_to_charge_hrs;
     const double energy_used_kwh_per_mile;
-    const uint16_t passenger_cnt;
+    const uint32_t passengers_per_vehicle;
     /// mean probability of faults per hour
     const double prob_fault_per_hr;
 
@@ -105,7 +107,7 @@ struct Vehicle_type
             double battery_capacity_kwh_,
             double time_to_charge_hrs_,
             double energy_used_kwh_per_mile_,
-            uint16_t passenger_cnt_,
+            uint32_t passengers_per_vehicle_,
             double prob_fault_per_hr_
         )
         : name{name_}
@@ -114,7 +116,7 @@ struct Vehicle_type
         , battery_capacity_kwh{battery_capacity_kwh_}
         , time_to_charge_hrs{time_to_charge_hrs_}
         , energy_used_kwh_per_mile{energy_used_kwh_per_mile_}
-        , passenger_cnt{passenger_cnt_}
+        , passengers_per_vehicle{passengers_per_vehicle_}
         , prob_fault_per_hr{prob_fault_per_hr_}
         // derived values
         , max_range_miles{battery_capacity_kwh/energy_used_kwh_per_mile}
@@ -134,7 +136,7 @@ struct Vehicle_type
             battery_capacity_kwh,
             time_to_charge_hrs,
             energy_used_kwh_per_mile,
-            passenger_cnt,
+            passengers_per_vehicle,
             prob_fault_per_hr,
             // derived values
             max_range_miles,
@@ -159,9 +161,9 @@ struct Vehicle_stats
 
     uint32_t num_flights = 0;
     double flight_time_hrs = 0;
-    double distance_traveled_miles = 0;
+    double distance_miles = 0;
 
-    uint32_t num_charge_sessions = 0;
+    uint32_t num_charges = 0; /// number of charge sessions
     double charge_time_hrs = 0;
 
     uint32_t num_faults = 0;
@@ -265,7 +267,7 @@ public:
     void run()
     {
         uint32_t num_steps = _simulation_duration_hrs/_simulation_step_size_hrs;
-        DEBUG_PRINTF("num_steps =%u\n", num_steps);
+        DEBUG_PRINTF("num_steps = %u\n", num_steps);
 
         // for all time steps
         for (uint32_t i = 0; i < num_steps; i++)
@@ -276,12 +278,92 @@ public:
                 iterate(&vehicle);
             }
         }
+
+        printf("Done running simulation. Calculating results.\n\n");
+
+        // For all vehicles, sum up the stats by vehicle type.
+        size_t i = 0;
+        for (Vehicle& vehicle : _vehicles)
+        {
+            DEBUG_PRINTF(
+                "%3lu: %10s, num_flights = %u, flight_time_hrs = %f, distance_miles = %f, num_charges = %u, "
+                "charge_time_hrs = %f, num_faults = %u\n",
+                i,
+                vehicle.type->name.c_str(),
+                vehicle.stats.num_flights,
+                vehicle.stats.flight_time_hrs,
+                vehicle.stats.distance_miles,
+                vehicle.stats.num_charges,
+                vehicle.stats.charge_time_hrs,
+                vehicle.stats.num_faults
+            );
+
+            // sum the totals by vehicle type
+            (vehicle.type->stats.num_vehicles)++;
+            vehicle.type->stats.total_num_flights += vehicle.stats.num_flights;
+            vehicle.type->stats.total_flight_time_hrs += vehicle.stats.flight_time_hrs;
+            vehicle.type->stats.total_distance_miles += vehicle.stats.distance_miles;
+            vehicle.type->stats.total_num_charges += vehicle.stats.num_charges;
+            vehicle.type->stats.total_charge_time_hrs += vehicle.stats.charge_time_hrs;
+            vehicle.type->stats.total_num_faults += vehicle.stats.num_faults;
+
+            i++;
+        }
+
+        // calculate additional compound stats by vehicle type
+        for (Vehicle_type& vehicle_type : _vehicle_types)
+        {
+            // passenger miles = num_passengers * num_miles
+            vehicle_type.stats.total_num_passenger_miles = vehicle_type.stats.num_vehicles*
+                vehicle_type.passengers_per_vehicle*vehicle_type.stats.total_distance_miles;
+
+            vehicle_type.stats.avg_flight_time_per_flight_hrs
+                = vehicle_type.stats.total_flight_time_hrs/vehicle_type.stats.total_num_flights;
+            vehicle_type.stats.avg_distance_per_flight_miles
+                = vehicle_type.stats.total_distance_miles/vehicle_type.stats.total_num_flights;
+            vehicle_type.stats.avg_charge_time_per_session_hrs
+                = vehicle_type.stats.total_charge_time_hrs/vehicle_type.stats.total_num_charges;
+        }
     }
 
     /// Print required simulation results
     void print_results()
     {
-        ////////
+        printf("Results by vehicle type:\n\n");
+
+        for (Vehicle_type& vehicle_type : _vehicle_types)
+        {
+            printf(
+                "Vehicle type: %s\n"
+                "Extra data:\n"
+                "  num_vehicles                     = %u\n"
+                "  total_num_flights                = %u\n"
+                "  total_flight_time_hrs            = %f\n"
+                "  total_distance_miles             = %f\n"
+                "  total_num_charges                = %u\n"
+                "  total_charge_time_hrs            = %f\n"
+                "Required data:\n"
+                "  avg_flight_time_per_flight_hrs   = %f\n"
+                "  avg_distance_per_flight_miles    = %f\n"
+                "  avg_charge_time_per_session_hrs  = %f\n"
+                "  total_num_faults                 = %u\n"
+                "  total_num_passenger_miles        = %f\n\n",
+                vehicle_type.name.c_str(),
+                // extra data
+                vehicle_type.stats.num_vehicles,
+                vehicle_type.stats.total_num_flights,
+                vehicle_type.stats.total_flight_time_hrs,
+                vehicle_type.stats.total_distance_miles,
+                vehicle_type.stats.total_num_charges,
+                vehicle_type.stats.total_charge_time_hrs,
+                // required data
+                vehicle_type.stats.avg_flight_time_per_flight_hrs,
+                vehicle_type.stats.avg_distance_per_flight_miles,
+                vehicle_type.stats.avg_charge_time_per_session_hrs,
+                vehicle_type.stats.total_num_faults,
+                vehicle_type.stats.total_num_passenger_miles
+            );
+        }
     }
 
 private:
@@ -307,7 +389,7 @@ private:
     /// Random number generator of `double` numbers from 0.0 to 1.0.
     std::uniform_real_distribution<double> _dist_0_to_1{0.0, 1.0};
 
-    /// Check for a simulated fault this time step
+    /// Check for a simulated fault this time step (while flying only)
     void check_for_fault(Vehicle* vehicle)
     {
         double random_num = _dist_0_to_1(_generator);
@@ -327,6 +409,7 @@ private:
             // start charging
             _num_chargers_available--;
             vehicle->stats.state = Vehicle_state::CHARGING;
+            (vehicle->stats.num_charges)++;
             return;
         }
 
@@ -352,9 +435,9 @@ private:
 
             vehicle->stats.flight_time_hrs += _simulation_step_size_hrs;
 
-            double distance_this_step_miles =
+            double distance_this_itn_miles =
                 vehicle->type->cruise_speed_mph*_simulation_step_size_hrs;
-            vehicle->stats.distance_traveled_miles += distance_this_step_miles;
+            vehicle->stats.distance_miles += distance_this_itn_miles;
 
             check_for_fault(vehicle);
 
@@ -362,28 +445,41 @@ private:
             // (it has traveled its max range in this case), then it must recharge or get in line
             // to recharge
 
+            // Note: alternatively, I could calculate the discharge rate here, in kW, and
+            // use that to adjust the energy used this iteration.
             double energy_used_this_iteration_kwh
-                = distance_this_step_miles*vehicle->type->energy_used_kwh_per_mile;
+                = distance_this_itn_miles*vehicle->type->energy_used_kwh_per_mile;
             vehicle->stats.battery_state_of_charge_kwh -= energy_used_this_iteration_kwh;
 
             if (vehicle->stats.battery_state_of_charge_kwh <= 0)
             {
-                try_to_charge();
+                try_to_charge(vehicle);
             }
 
             break;
         }
         case Vehicle_state::WAITING_FOR_CHARGER:
         {
-            try_to_charge();
+            try_to_charge(vehicle);
             break;
         }
         case Vehicle_state::CHARGING:
         {
-            // if you're full (ie: you've charged **long enough**, based on how the description of
-            // this simulation is written), get off the charger and start flying again!
+            vehicle->stats.charge_time_hrs += _simulation_step_size_hrs;
 
-            if ()
+            double charge_rate_kw
+                = vehicle->type->battery_capacity_kwh/vehicle->type->time_to_charge_hrs;
+
+            double charge_energy_this_itn_kwh = charge_rate_kw*_simulation_step_size_hrs;
+
+            vehicle->stats.battery_state_of_charge_kwh += charge_energy_this_itn_kwh;
+
+            // if you're fully charged, get off the charger and start flying again!
+            if (vehicle->stats.battery_state_of_charge_kwh >= vehicle->type->battery_capacity_kwh)
+            {
+                _num_chargers_available++;
+                vehicle->stats.state = Vehicle_state::FLYING;
+            }
 
             break;
         }
