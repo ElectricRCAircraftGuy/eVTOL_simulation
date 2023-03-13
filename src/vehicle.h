@@ -57,8 +57,6 @@ struct Vehicle_type
     const double max_range_miles; // on a single charge
     const double max_flight_time_hrs; // on a single charge
     const double cruise_power_kw;
-    /// mean probability of faults per second
-    const double prob_fault_per_sec;
 
     Vehicle_type_stats stats;
 

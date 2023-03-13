@@ -41,6 +41,8 @@ protected:
     {
         return &simulation->_vehicle_types;
     }
+
+    std::vector<Vehicle> _vehicles;
 };
 
 // anonymous namespace
@@ -52,6 +54,8 @@ namespace
 TEST_F(SimulationTestFixture, EndToEndTest)
 {
     Simulation simulation{NUM_CHARGERS, SIMULATION_DURATION_HRS, SIMULATION_STEP_SIZE_HRS};
+
+
 
     // Add the various company vehicle types and stats
     // clang-format off
@@ -68,7 +72,21 @@ TEST_F(SimulationTestFixture, EndToEndTest)
 
     // Ensure they were added properly
 
-    EXPECT_EQ(vehicle_types->size(), 5);
+    EXPECT_EQ(vehicle_types->size(), 5) << "This many vehicles should be in the vector.";
+
+    // primary values
+    EXPECT_EQ(vehicle_types->name, "Alpha");
+    EXPECT_FLOAT_EQ(vehicle_types->cruise_speed_mph, 120);
+    EXPECT_FLOAT_EQ(vehicle_types->battery_capacity_kwh, 320);
+    EXPECT_FLOAT_EQ(vehicle_types->time_to_charge_hrs, 0.6);
+    EXPECT_FLOAT_EQ(vehicle_types->energy_used_kwh_per_mile, 1.6);
+    EXPECT_EQ(vehicle_types->passengers_per_vehicle, 4);
+    EXPECT_FLOAT_EQ(vehicle_types->prob_fault_per_hr, 0.25);
+    // derived values
+    EXPECT_FLOAT_EQ(vehicle_types->max_range_miles, 320.0/1.6); // kwh / khw/mile = miles
+    EXPECT_FLOAT_EQ(vehicle_types->max_flight_time_hrs, 320.0/1.6/120); // miles / miles/hr = hr
+    EXPECT_FLOAT_EQ(vehicle_types->cruise_power_kw, 320.0/(320.0/1.6/120));
+
 
 
 

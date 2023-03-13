@@ -21,7 +21,6 @@ Vehicle_type::Vehicle_type(
     , max_range_miles{battery_capacity_kwh/energy_used_kwh_per_mile}
     , max_flight_time_hrs{max_range_miles/cruise_speed_mph}
     , cruise_power_kw{battery_capacity_kwh/max_flight_time_hrs}
-    , prob_fault_per_sec{prob_fault_per_hr/(double)SECONDS_PER_HR}
 {}
 
 void Vehicle_type::print() const
@@ -40,8 +39,7 @@ void Vehicle_type::print() const
         // derived values
         max_range_miles,
         max_flight_time_hrs,
-        cruise_power_kw,
-        prob_fault_per_sec
+        cruise_power_kw
     );
 }
 
