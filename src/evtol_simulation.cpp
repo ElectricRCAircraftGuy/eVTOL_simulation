@@ -324,26 +324,28 @@ public:
     /// Print required simulation results
     void print_results()
     {
-        printf("\nResults by vehicle type:\n\n");
+        printf("\nResults by vehicle type:\n"
+               "- The most important results, in my opinion, are marked with \"<====\".\n\n");
 
         for (Vehicle_type& vehicle_type : _vehicle_types)
         {
             printf(
                 "Vehicle type: %s\n"
-                "Extra data:\n"
-                "  num_vehicles                     = %u\n"
-                "  total_num_flights                = %u\n"
-                "  total_flight_time_hrs            = %f\n"
-                "  total_distance_miles             = %f\n"
-                "  total_num_charges                = %u\n"
-                "  total_charge_time_hrs            = %f\n"
-                /////////// avg passenger miles per vehicle
-                "Required data:\n"
-                "  avg_flight_time_per_flight_hrs   = %f\n"
-                "  avg_distance_per_flight_miles    = %f\n"
-                "  avg_charge_time_per_session_hrs  = %f\n"
-                "  total_num_faults                 = %u\n"
-                "  total_num_passenger_miles        = %f\n\n",
+                "  Extra data:\n"
+                "    num_vehicles                     = %u\n"
+                "    total_num_flights                = %u\n"
+                "    total_flight_time_hrs            = %f\n"
+                "    total_distance_miles             = %f\n"
+                "    total_num_charges                = %u\n"
+                "    total_charge_time_hrs            = %f\n"
+                "    avg faults per vehicle           = %f  <==\n"
+                "    avg passenger miles per vehicle  = %f  <====\n"
+                "  Required data:\n"
+                "    avg_flight_time_per_flight_hrs   = %f\n"
+                "    avg_distance_per_flight_miles    = %f\n"
+                "    avg_charge_time_per_session_hrs  = %f\n"
+                "    total_num_faults                 = %u\n"
+                "    total_num_passenger_miles        = %f\n\n",
                 vehicle_type.name.c_str(),
                 // extra data
                 vehicle_type.stats.num_vehicles,
@@ -352,6 +354,8 @@ public:
                 vehicle_type.stats.total_distance_miles,
                 vehicle_type.stats.total_num_charges,
                 vehicle_type.stats.total_charge_time_hrs,
+                (double)(vehicle_type.stats.total_num_faults)/vehicle_type.stats.num_vehicles,
+                vehicle_type.stats.total_num_passenger_miles/vehicle_type.stats.num_vehicles,
                 // required data
                 vehicle_type.stats.avg_flight_time_per_flight_hrs,
                 vehicle_type.stats.avg_distance_per_flight_miles,
