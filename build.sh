@@ -10,13 +10,16 @@ SCRIPT_FILENAME="$(basename "$FULL_PATH_TO_SCRIPT")"
 RETURN_CODE_SUCCESS=0
 RETURN_CODE_ERROR=1
 
+SRC_FILES_COMMON=(
+    "src/simulation.cpp"
+    "src/vehicle.cpp"
+)
 
 build_and_run_program()
 {
     SRC_FILES=(
         "src/main.cpp"
-        "src/simulation.cpp"
-        "src/vehicle.cpp"
+        "${SRC_FILES_COMMON[@]}"
     )
     EXECUTABLE_NAME="evtol_simulation"
 
@@ -44,6 +47,7 @@ build_and_run_unit_tests()
 {
     SRC_FILES=(
         "src/main_unittest.cpp"
+        "${SRC_FILES_COMMON[@]}"
     )
     EXECUTABLE_NAME="evtol_simulation_unittest"
 

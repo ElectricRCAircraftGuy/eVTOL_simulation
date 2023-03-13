@@ -1,5 +1,5 @@
 /*
-Vehicle class module
+Vehicle class module for vehicle types and vehicles.
 */
 
 #pragma once
