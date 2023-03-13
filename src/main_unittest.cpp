@@ -113,8 +113,9 @@ TEST_F(SimulationTestFixture, EndToEndTest)
     EXPECT_FLOAT_EQ(vehicle_alpha->prob_fault_per_hr, 0.25);
     // derived values
     EXPECT_FLOAT_EQ(vehicle_alpha->max_range_miles, 320.0 / 1.6);  // kwh / khw/mile = miles
-    EXPECT_FLOAT_EQ(vehicle_alpha->max_flight_time_hrs,
-                    320.0 / 1.6 / 120);  // miles / miles/hr = hr
+    EXPECT_FLOAT_EQ(
+        vehicle_alpha->max_flight_time_hrs,
+        320.0 / 1.6 / 120);  // miles / miles/hr = hr
     EXPECT_FLOAT_EQ(vehicle_alpha->cruise_power_kw, 320.0 / (320.0 / 1.6 / 120));
 
     // Randomly populate the correct total number of vehicles

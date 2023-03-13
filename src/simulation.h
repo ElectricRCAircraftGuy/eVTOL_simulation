@@ -29,9 +29,10 @@ class Simulation
 {
 public:
     // constructor
-    Simulation(uint32_t num_chargers,
-               double simulation_duration_hrs,
-               double simulation_step_size_hrs);
+    Simulation(
+        uint32_t num_chargers,
+        double simulation_duration_hrs,
+        double simulation_step_size_hrs);
 
     // returns true if successful and false otherwise
     // TODO: improve error handling; ex: return enums instead. Ex: see `enum class Error_code`
