@@ -9,6 +9,7 @@ a crude simulator to simulate some battery usage, range, recharging and stuff
 
 1. [TODO:](#todo)
 1. [References:](#references)
+1. [Assumptions](#assumptions)
 1. [Build](#build)
 1. [Sample runs and output](#sample-runs-and-output)
     1. [Run 1](#run-1)
@@ -23,6 +24,7 @@ a crude simulator to simulate some battery usage, range, recharging and stuff
 
 1. [ ] break apart into multiple modules, each with a header and source file.
 1. [nah] add setters and getters, perhaps; nah.
+1. (optional) add namespaces to modules
 
 Next:
 1. [ ] add clang-format
@@ -37,6 +39,28 @@ Next:
 1. https://en.cppreference.com/w/cpp/numeric/random
 1. https://en.wikipedia.org/wiki/Monte_Carlo_method
 1. [my answer] [How to install Google Test (`gtest`) and Google Mock (`gmock`) as shared, static `.a` libraries, system-wide, on Linux/Unix](https://stackoverflow.com/a/75718815/4561887)
+
+
+<a id="assumptions"></a>
+# Assumptions
+
+1. Provided Assumptions
+    - Each vehicle starts the simulation with a fully-charged battery
+    - Each vehicle instantaneously reaches Cruise Speed
+    - Each vehicle is airborne for the full use of the battery, and is immediately in line for the
+      charger after running out of battery power.
+
+1. Additional Assumptions:
+    - faults can only occur during **flying**, NOT during waiting for a charger, or charging.
+    - faults don't make the vehicle stop flying; it keeps flying; you just count the faults
+    - when the plane runs out of fuel it is instantly at the charger without adding distance
+    - only charge when the battery is empty (at 0% State of Charge (SoC))
+    - "the probability of fault per hour" statistic should be evenly spread across the time steps, to
+      provide a more-realistic "real-life" simulation, providing for the ability to run this simulation
+      "real time" if you wanted to train ground support personal to actually respond to the emergencies
+      and operations at the predicted real-time cadence.
+    - once a vehicle gets on the charger, it will stay there until full
+    - each vehicle is fully loaded with passengers every flight
 
 
 <a id="build"></a>
