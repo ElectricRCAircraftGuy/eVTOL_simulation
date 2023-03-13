@@ -65,6 +65,8 @@ struct Vehicle_type_stats
     uint32_t total_num_flights = 0;
     double total_flight_time_hrs = 0;
     double total_distance_miles = 0;
+    uint32_t total_num_times_waiting = 0;
+    double total_wait_time_hrs = 0;
     uint32_t total_num_charges = 0;
     double total_charge_time_hrs = 0;
     uint32_t num_vehicles = 0; /// the total number of vehicles of this type
@@ -157,6 +159,9 @@ struct Vehicle_stats
     uint32_t num_flights = 0;
     double flight_time_hrs = 0;
     double distance_miles = 0;
+
+    uint32_t num_times_waiting = 0;
+    double wait_time_hrs = 0;
 
     uint32_t num_charges = 0; /// number of charge sessions
     double charge_time_hrs = 0;
@@ -281,15 +286,20 @@ public:
         for (Vehicle& vehicle : _vehicles)
         {
             DEBUG_PRINTF(
-                "%3lu: %10s, num_flights = %u, flight_time_hrs = %f, distance_miles = %f, num_charges = %u, "
-                "charge_time_hrs = %f, num_faults = %u\n",
+                "%3lu: %10s, num_flights = %u, flight_time_hrs = %f, distance_miles = %f, "
+                "num_times_waiting = %u, wait_time_hrs = %f, num_charges = %u, "
+                "charge_time_hrs = %f, flight+wait+charge-time(hrs) = %f, num_faults = %u\n",
                 i,
                 vehicle.type->name.c_str(),
                 vehicle.stats.num_flights,
                 vehicle.stats.flight_time_hrs,
                 vehicle.stats.distance_miles,
+                vehicle.stats.num_times_waiting,
+                vehicle.stats.wait_time_hrs,
                 vehicle.stats.num_charges,
                 vehicle.stats.charge_time_hrs,
+                vehicle.stats.flight_time_hrs + vehicle.stats.wait_time_hrs
+                    + vehicle.stats.charge_time_hrs,
                 vehicle.stats.num_faults
             );
 
@@ -298,6 +308,8 @@ public:
             vehicle.type->stats.total_num_flights += vehicle.stats.num_flights;
             vehicle.type->stats.total_flight_time_hrs += vehicle.stats.flight_time_hrs;
             vehicle.type->stats.total_distance_miles += vehicle.stats.distance_miles;
+            vehicle.type->stats.total_num_times_waiting += vehicle.stats.num_times_waiting;
+            vehicle.type->stats.total_wait_time_hrs += vehicle.stats.wait_time_hrs;
             vehicle.type->stats.total_num_charges += vehicle.stats.num_charges;
             vehicle.type->stats.total_charge_time_hrs += vehicle.stats.charge_time_hrs;
             vehicle.type->stats.total_num_faults += vehicle.stats.num_faults;
@@ -338,6 +350,9 @@ public:
                 "    total_distance_miles             = %f\n"
                 "    total_num_charges                = %u\n"
                 "    total_charge_time_hrs            = %f\n"
+                "    total_num_times_waiting          = %u\n"
+                "    total_wait_time_hrs              = %f\n"
+                "    sum of all 3 times (hrs)         = %f\n"
                 "    avg faults per vehicle           = %f  <==\n"
                 "    avg passenger miles per vehicle  = %f  <====\n"
                 "  Required data:\n"
@@ -354,6 +369,10 @@ public:
                 vehicle_type.stats.total_distance_miles,
                 vehicle_type.stats.total_num_charges,
                 vehicle_type.stats.total_charge_time_hrs,
+                vehicle_type.stats.total_num_times_waiting,
+                vehicle_type.stats.total_wait_time_hrs,
+                vehicle_type.stats.total_flight_time_hrs + vehicle_type.stats.total_charge_time_hrs
+                    + vehicle_type.stats.total_wait_time_hrs,
                 (double)(vehicle_type.stats.total_num_faults)/vehicle_type.stats.num_vehicles,
                 vehicle_type.stats.total_num_passenger_miles/vehicle_type.stats.num_vehicles,
                 // required data
@@ -408,11 +427,12 @@ private:
             _num_chargers_available--;
             vehicle->stats.state = Vehicle_state::CHARGING;
             (vehicle->stats.num_charges)++;
-            return;
         }
-
-        // get in the charge line
-        vehicle->stats.state = Vehicle_state::WAITING_FOR_CHARGER;
+        else
+        {
+            // get in the charge line
+            vehicle->stats.state = Vehicle_state::WAITING_FOR_CHARGER;
+        }
     }
 
     /// Iterate one time step forward in the simulation for one vehicle
@@ -457,6 +477,14 @@ private:
         }
         case Vehicle_state::WAITING_FOR_CHARGER:
         {
+            if (vehicle->stats.last_state != Vehicle_state::WAITING_FOR_CHARGER)
+            {
+                // We just started waiting, so increment the wait counter
+                (vehicle->stats.num_times_waiting)++;
+            }
+
+            vehicle->stats.wait_time_hrs += _simulation_step_size_hrs;
+
             try_to_charge(vehicle);
             break;
         }
