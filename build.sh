@@ -10,18 +10,25 @@ SCRIPT_FILENAME="$(basename "$FULL_PATH_TO_SCRIPT")"
 RETURN_CODE_SUCCESS=0
 RETURN_CODE_ERROR=1
 
-SRC_FILES=(
-    "src/evtol_simulation.cpp"
-)
-EXECUTABLE_NAME="evtol_simulation"
 
-main() {
+build_and_run_program()
+{
+    SRC_FILES=(
+        "src/main.cpp"
+        "src/simulation.cpp"
+        "src/vehicle.cpp"
+    )
+    EXECUTABLE_NAME="evtol_simulation"
+
+    echo "================================================="
     echo "Building and running $EXECUTABLE_NAME."
+    echo "================================================="
     cd "$SCRIPT_DIRECTORY"
     mkdir -p bin
 
     echo "Building..."
-    time ccache g++ -Wall -Wextra -Werror -O3 -std=gnu++17 "${SRC_FILES[@]}" -o "bin/$EXECUTABLE_NAME"
+    time ccache g++ -Wall -Wextra -Werror -O3 -std=gnu++17 "${SRC_FILES[@]}" \
+        -I"src" -o "bin/$EXECUTABLE_NAME"
 
     return_code="$?"
     if [ "$return_code" -eq 0 ]; then
@@ -31,6 +38,39 @@ main() {
         echo "Failed to build."
         exit "$RETURN_CODE_ERROR"
     fi
+}
+
+build_and_run_unit_tests()
+{
+    SRC_FILES=(
+        "src/main_unittest.cpp"
+    )
+    EXECUTABLE_NAME="evtol_simulation_unittest"
+
+
+    echo "================================================="
+    echo "Building and running $EXECUTABLE_NAME."
+    echo "================================================="
+    cd "$SCRIPT_DIRECTORY"
+    mkdir -p bin
+
+    echo "Building..."
+    time ccache g++ -Wall -Wextra -Werror -O3 -std=gnu++17 -pthread "${SRC_FILES[@]}" \
+        -lgtest -lgtest_main -o "bin/$EXECUTABLE_NAME"
+
+    return_code="$?"
+    if [ "$return_code" -eq 0 ]; then
+        echo -e "\nRunning..."
+        "bin/$EXECUTABLE_NAME"
+    else
+        echo "Failed to build."
+        exit "$RETURN_CODE_ERROR"
+    fi
+}
+
+main() {
+    # build_and_run_unit_tests
+    build_and_run_program
 }
 
 # Determine if the script is being sourced or executed (run).
