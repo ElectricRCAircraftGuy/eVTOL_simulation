@@ -14,7 +14,6 @@ Vehicle class module for vehicle types and vehicles.
 #include <iostream>
 #include <string>
 
-
 struct Vehicle_type_stats
 {
     // required to publish
@@ -33,7 +32,7 @@ struct Vehicle_type_stats
     double total_wait_time_hrs = 0;
     uint32_t total_num_charges = 0;
     double total_charge_time_hrs = 0;
-    uint32_t num_vehicles = 0; /// the total number of vehicles of this type
+    uint32_t num_vehicles = 0;  /// the total number of vehicles of this type
 };
 
 /// You need one of these objects per vehicle type
@@ -54,22 +53,16 @@ struct Vehicle_type
 
     // derived values
 
-    const double max_range_miles; // on a single charge
-    const double max_flight_time_hrs; // on a single charge
+    const double max_range_miles;      // on a single charge
+    const double max_flight_time_hrs;  // on a single charge
     const double cruise_power_kw;
 
     Vehicle_type_stats stats;
 
     // constructor
-    Vehicle_type(
-            std::string name_,
-            double cruise_speed_mph_,
-            double battery_capacity_kwh_,
-            double time_to_charge_hrs_,
-            double energy_used_kwh_per_mile_,
-            uint32_t passengers_per_vehicle_,
-            double prob_fault_per_hr_
-        );
+    Vehicle_type(std::string name_, double cruise_speed_mph_, double battery_capacity_kwh_,
+                 double time_to_charge_hrs_, double energy_used_kwh_per_mile_,
+                 uint32_t passengers_per_vehicle_, double prob_fault_per_hr_);
 
     void print() const;
 };
@@ -93,7 +86,7 @@ struct Vehicle_stats
     uint32_t num_times_waiting = 0;
     double wait_time_hrs = 0;
 
-    uint32_t num_charges = 0; /// number of charge sessions
+    uint32_t num_charges = 0;  /// number of charge sessions
     double charge_time_hrs = 0;
 
     uint32_t num_faults = 0;

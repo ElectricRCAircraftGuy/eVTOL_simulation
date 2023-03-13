@@ -9,7 +9,7 @@ Simulation class module
 #include "vehicle.h"
 
 // 3rd-party library includes
-#include <gtest/gtest_prod.h> // for `FRIEND_TEST()` macro
+#include <gtest/gtest_prod.h>  // for `FRIEND_TEST()` macro
 
 // Linux includes
 // NA
@@ -21,7 +21,6 @@ Simulation class module
 #include <unordered_set>
 #include <vector>
 
-
 /// The main class required to create vehicles and run the whole simulation.
 /// \note  Running many simulations at once could easily be parallelized as part of a larger
 ///        Monte Carlo method simulation by creating and running one `Simulation` class per
@@ -30,10 +29,8 @@ class Simulation
 {
 public:
     // constructor
-    Simulation(
-        uint32_t num_chargers,
-        double simulation_duration_hrs,
-        double simulation_step_size_hrs);
+    Simulation(uint32_t num_chargers, double simulation_duration_hrs,
+               double simulation_step_size_hrs);
 
     // returns true if successful and false otherwise
     // TODO: improve error handling; ex: return enums instead. Ex: see `enum class Error_code`
