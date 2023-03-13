@@ -1,0 +1,3 @@
+[submodule "eRCaGuy_CodeFormatter"]
+	path = eRCaGuy_CodeFormatter
+	url = https://github.com/ElectricRCAircraftGuy/eRCaGuy_CodeFormatter.git
