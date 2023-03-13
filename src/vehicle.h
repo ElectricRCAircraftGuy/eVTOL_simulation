@@ -39,6 +39,7 @@ struct Vehicle_type_stats
     uint32_t num_vehicles = 0; /// the total number of vehicles of this type
 };
 
+/// You need one of these objects per vehicle type
 struct Vehicle_type
 {
     // primary values
@@ -73,42 +74,9 @@ struct Vehicle_type
             double energy_used_kwh_per_mile_,
             uint32_t passengers_per_vehicle_,
             double prob_fault_per_hr_
-        )
-        : name{name_}
-        // primary values
-        , cruise_speed_mph{cruise_speed_mph_}
-        , battery_capacity_kwh{battery_capacity_kwh_}
-        , time_to_charge_hrs{time_to_charge_hrs_}
-        , energy_used_kwh_per_mile{energy_used_kwh_per_mile_}
-        , passengers_per_vehicle{passengers_per_vehicle_}
-        , prob_fault_per_hr{prob_fault_per_hr_}
-        // derived values
-        , max_range_miles{battery_capacity_kwh/energy_used_kwh_per_mile}
-        , max_flight_time_hrs{max_range_miles/cruise_speed_mph}
-        , cruise_power_kw{battery_capacity_kwh/max_flight_time_hrs}
-        , prob_fault_per_sec{prob_fault_per_hr/(double)SECONDS_PER_HR}
-    {}
-
-    void print() const
-    {
-        printf(
-            "%-10s Primary values: %8.2f %8.2f %6.2f %6.8f %4u %6.2f\n"
-            "           Derived values: %8.2f %8.2f %6.2f %6.8f\n\n",
-            name.c_str(),
-            // primary values
-            cruise_speed_mph,
-            battery_capacity_kwh,
-            time_to_charge_hrs,
-            energy_used_kwh_per_mile,
-            passengers_per_vehicle,
-            prob_fault_per_hr,
-            // derived values
-            max_range_miles,
-            max_flight_time_hrs,
-            cruise_power_kw,
-            prob_fault_per_sec
         );
-    }
+
+    void print() const;
 };
 
 /// State machine for each vehicle
@@ -144,18 +112,15 @@ struct Vehicle_stats
     Vehicle_state last_state = Vehicle_state::CHARGING;
 };
 
+/// You need one of these objects per vehicle
 struct Vehicle
 {
     // constructor
-    Vehicle(Vehicle_type* type_)
-    : type{type_}
-    {
-        // start the vehicle out with a fully-charged battery
-        stats.battery_state_of_charge_kwh = type->battery_capacity_kwh;
-    }
+    Vehicle(Vehicle_type* type_);
 
-    // ptr to the vehicle type this vehicle is; don't copy the whole `Vehicle_type` struct into
-    // each vehicle; just point to the data
+    // ptr to the vehicle type this vehicle is; don't copy the whole `Vehicle_type` struct into each
+    // vehicle; just point to the data; this way you don't unnecessarily duplicate `Vehicle_type`
+    // objects.
     Vehicle_type* type;
     Vehicle_stats stats;
 };

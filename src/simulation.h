@@ -2,7 +2,7 @@
 Simulation class module
 */
 
-# pragma once
+#pragma once
 
 // local includes
 #include "utils.h"
@@ -19,7 +19,10 @@ Simulation class module
 #include <vector>
 
 
-/// The main class required to create vehicles and run the whole simulation
+/// The main class required to create vehicles and run the whole simulation.
+/// \note  Running many simulations at once could easily be parallelized as part of a larger
+///        Monte Carlo method simulation by creating and running one `Simulation` class per
+///        hardware thread.
 class Simulation
 {
 public:
