@@ -13,8 +13,8 @@ Homework problem: a simulator to simulate some eVTOL aircraft flying around to s
 1. [Assumptions](#assumptions)
 1. [Build](#build)
 1. [Sample runs and output](#sample-runs-and-output)
-    1. [Run 1](#run-1)
-    1. [Run 2](#run-2)
+    1. [Run 1 \(`./build.sh`--full build and run of unit tests and simulation\)](#run-1-buildsh--full-build-and-run-of-unit-tests-and-simulation)
+    1. [Run 2 \(`time bin/evtol_simulation`--just running the simulation again\)](#run-2-time-binevtol_simulation--just-running-the-simulation-again)
 
 <!-- /MarkdownTOC -->
 </details>
@@ -142,317 +142,402 @@ time bin/evtol_simulation
 # Sample runs and output
 
 
-<a id="run-1"></a>
-## Run 1
+<a id="run-1-buildsh--full-build-and-run-of-unit-tests-and-simulation"></a>
+## Run 1 (`./build.sh`--full build and run of unit tests and simulation)
 
 ```bash
 eVTOL_simulation$ ./build.sh 
-Building and running evtol_simulation.
+No arguments; building and running both unit tests and the main program.
+=================================================
+Building and running evtol_simulation_unittest.
+=================================================
 Building...
 
-real    0m0.954s
-user    0m0.865s
-sys 0m0.089s
+real    0m3.058s
+user    0m2.805s
+sys 0m0.241s
 
 Running...
-Running simulation
-
-Vehicle types:
-Alpha      Primary values:   120.00   320.00   0.60 1.60000000    4   0.25
-           Derived values:   200.00     1.67 192.00 0.00006944
-
-Bravo      Primary values:   100.00   100.00   0.20 1.50000000    5   0.10
-           Derived values:    66.67     0.67 150.00 0.00002778
-
-Charlie    Primary values:   160.00   220.00   0.80 2.20000000    3   0.05
-           Derived values:   100.00     0.62 352.00 0.00001389
-
-Delta      Primary values:    90.00   120.00   0.62 0.80000000    2   0.22
-           Derived values:   150.00     1.67  72.00 0.00006111
-
-Echo       Primary values:    30.00   150.00   0.30 5.80000000    2   0.61
-           Derived values:    25.86     0.86 174.00 0.00016944
-
-Vehicles:
-  i  name
-----------
-  0: Charlie
-  1: Charlie
-  2: Charlie
-  3: Alpha
-  4: Charlie
-  5: Bravo
-  6: Echo
-  7: Charlie
-  8: Echo
-  9: Bravo
- 10: Echo
- 11: Delta
- 12: Alpha
- 13: Bravo
- 14: Echo
- 15: Alpha
- 16: Echo
- 17: Charlie
- 18: Charlie
- 19: Delta
-
-
-DEBUG: num_steps = 10800
+Running main() from /home/gabriel/GS/dev/temp/googletest/googletest/src/gtest_main.cc
+[==========] Running 2 tests from 2 test suites.
+[----------] Global test environment set-up.
+[----------] 1 test from SimulationTestFixture
+[ RUN      ] SimulationTestFixture.EndToEndTest
 Done running simulation. Calculating results.
 
-DEBUG:   0:    Charlie, num_flights = 2, flight_time_hrs = 1.250556, distance_miles = 200.088889, num_charges = 1, charge_time_hrs = 0.800556, num_faults = 0
-DEBUG:   1:    Charlie, num_flights = 2, flight_time_hrs = 1.250556, distance_miles = 200.088889, num_charges = 1, charge_time_hrs = 0.800556, num_faults = 0
-DEBUG:   2:    Charlie, num_flights = 2, flight_time_hrs = 1.250556, distance_miles = 200.088889, num_charges = 1, charge_time_hrs = 0.800556, num_faults = 0
-DEBUG:   3:      Alpha, num_flights = 1, flight_time_hrs = 1.666667, distance_miles = 200.000000, num_charges = 0, charge_time_hrs = 0.000000, num_faults = 0
-DEBUG:   4:    Charlie, num_flights = 2, flight_time_hrs = 1.250556, distance_miles = 200.088889, num_charges = 1, charge_time_hrs = 0.800556, num_faults = 0
-DEBUG:   5:      Bravo, num_flights = 2, flight_time_hrs = 1.334444, distance_miles = 133.444444, num_charges = 1, charge_time_hrs = 0.200278, num_faults = 1
-DEBUG:   6:       Echo, num_flights = 2, flight_time_hrs = 1.725000, distance_miles = 51.750000, num_charges = 1, charge_time_hrs = 0.300278, num_faults = 3
-DEBUG:   7:    Charlie, num_flights = 2, flight_time_hrs = 1.198611, distance_miles = 191.777778, num_charges = 1, charge_time_hrs = 0.800556, num_faults = 0
-DEBUG:   8:       Echo, num_flights = 2, flight_time_hrs = 1.725000, distance_miles = 51.750000, num_charges = 1, charge_time_hrs = 0.300278, num_faults = 0
-DEBUG:   9:      Bravo, num_flights = 2, flight_time_hrs = 1.334444, distance_miles = 133.444444, num_charges = 1, charge_time_hrs = 0.200278, num_faults = 0
-DEBUG:  10:       Echo, num_flights = 2, flight_time_hrs = 1.335556, distance_miles = 40.066667, num_charges = 1, charge_time_hrs = 0.300278, num_faults = 1
-DEBUG:  11:      Delta, num_flights = 2, flight_time_hrs = 1.820000, distance_miles = 163.800000, num_charges = 1, charge_time_hrs = 0.620278, num_faults = 0
-DEBUG:  12:      Alpha, num_flights = 1, flight_time_hrs = 1.666667, distance_miles = 200.000000, num_charges = 1, charge_time_hrs = 0.573333, num_faults = 1
-DEBUG:  13:      Bravo, num_flights = 2, flight_time_hrs = 0.939722, distance_miles = 93.972222, num_charges = 1, charge_time_hrs = 0.200278, num_faults = 0
-DEBUG:  14:       Echo, num_flights = 1, flight_time_hrs = 0.862222, distance_miles = 25.866667, num_charges = 1, charge_time_hrs = 0.273056, num_faults = 1
-DEBUG:  15:      Alpha, num_flights = 1, flight_time_hrs = 1.666667, distance_miles = 200.000000, num_charges = 1, charge_time_hrs = 0.153056, num_faults = 0
-DEBUG:  16:       Echo, num_flights = 1, flight_time_hrs = 0.862222, distance_miles = 25.866667, num_charges = 0, charge_time_hrs = 0.000000, num_faults = 2
-DEBUG:  17:    Charlie, num_flights = 1, flight_time_hrs = 0.625278, distance_miles = 100.044444, num_charges = 0, charge_time_hrs = 0.000000, num_faults = 0
-DEBUG:  18:    Charlie, num_flights = 1, flight_time_hrs = 0.625278, distance_miles = 100.044444, num_charges = 0, charge_time_hrs = 0.000000, num_faults = 0
-DEBUG:  19:      Delta, num_flights = 1, flight_time_hrs = 1.666944, distance_miles = 150.025000, num_charges = 0, charge_time_hrs = 0.000000, num_faults = 1
-Results by vehicle type:
+[       OK ] SimulationTestFixture.EndToEndTest (2 ms)
+[----------] 1 test from SimulationTestFixture (2 ms total)
 
-Vehicle type: Alpha
-Extra data:
-  num_vehicles                     = 3
-  total_num_flights                = 3
-  total_flight_time_hrs            = 5.000000
-  total_distance_miles             = 600.000000
-  total_num_charges                = 2
-  total_charge_time_hrs            = 0.726389
-Required data:
-  avg_flight_time_per_flight_hrs   = 1.666667
-  avg_distance_per_flight_miles    = 200.000000
-  avg_charge_time_per_session_hrs  = 0.363194
-  total_num_faults                 = 1
-  total_num_passenger_miles        = 7200.000000
+[----------] 1 test from Simulation
+[ RUN      ] Simulation.TrivialEndToEnd
+Done running simulation. Calculating results.
 
-Vehicle type: Bravo
-Extra data:
-  num_vehicles                     = 3
-  total_num_flights                = 6
-  total_flight_time_hrs            = 3.608611
-  total_distance_miles             = 360.861111
-  total_num_charges                = 3
-  total_charge_time_hrs            = 0.600833
-Required data:
-  avg_flight_time_per_flight_hrs   = 0.601435
-  avg_distance_per_flight_miles    = 60.143519
-  avg_charge_time_per_session_hrs  = 0.200278
-  total_num_faults                 = 1
-  total_num_passenger_miles        = 5412.916667
+[       OK ] Simulation.TrivialEndToEnd (0 ms)
+[----------] 1 test from Simulation (0 ms total)
 
-Vehicle type: Charlie
-Extra data:
-  num_vehicles                     = 7
-  total_num_flights                = 12
-  total_flight_time_hrs            = 7.451389
-  total_distance_miles             = 1192.222222
-  total_num_charges                = 5
-  total_charge_time_hrs            = 4.002778
-Required data:
-  avg_flight_time_per_flight_hrs   = 0.620949
-  avg_distance_per_flight_miles    = 99.351852
-  avg_charge_time_per_session_hrs  = 0.800556
-  total_num_faults                 = 0
-  total_num_passenger_miles        = 25036.666667
-
-Vehicle type: Delta
-Extra data:
-  num_vehicles                     = 2
-  total_num_flights                = 3
-  total_flight_time_hrs            = 3.486944
-  total_distance_miles             = 313.825000
-  total_num_charges                = 1
-  total_charge_time_hrs            = 0.620278
-Required data:
-  avg_flight_time_per_flight_hrs   = 1.162315
-  avg_distance_per_flight_miles    = 104.608333
-  avg_charge_time_per_session_hrs  = 0.620278
-  total_num_faults                 = 1
-  total_num_passenger_miles        = 1255.300000
-
-Vehicle type: Echo
-Extra data:
-  num_vehicles                     = 5
-  total_num_flights                = 8
-  total_flight_time_hrs            = 6.510000
-  total_distance_miles             = 195.300000
-  total_num_charges                = 4
-  total_charge_time_hrs            = 1.173889
-Required data:
-  avg_flight_time_per_flight_hrs   = 0.813750
-  avg_distance_per_flight_miles    = 24.412500
-  avg_charge_time_per_session_hrs  = 0.293472
-  total_num_faults                 = 7
-  total_num_passenger_miles        = 1953.000000
-```
-
-
-<a id="run-2"></a>
-## Run 2
-
-```bash
-eVTOL_simulation$ ./build.sh 
+[----------] Global test environment tear-down
+[==========] 2 tests from 2 test suites ran. (3 ms total)
+[  PASSED  ] 2 tests.
+=================================================
 Building and running evtol_simulation.
+=================================================
 Building...
 
-real    0m0.957s
-user    0m0.885s
-sys 0m0.072s
+real    0m1.882s
+user    0m1.746s
+sys 0m0.129s
 
 Running...
 Running simulation
 
 Vehicle types:
 Alpha      Primary values:   120.00   320.00   0.60 1.60000000    4   0.25
-           Derived values:   200.00     1.67 192.00 0.00006944
+           Derived values: max_range_miles=200.00 max_flight_time_hrs=1.67 cruise_power_kw=192.00
 
 Bravo      Primary values:   100.00   100.00   0.20 1.50000000    5   0.10
-           Derived values:    66.67     0.67 150.00 0.00002778
+           Derived values: max_range_miles=66.67 max_flight_time_hrs=0.67 cruise_power_kw=150.00
 
 Charlie    Primary values:   160.00   220.00   0.80 2.20000000    3   0.05
-           Derived values:   100.00     0.62 352.00 0.00001389
+           Derived values: max_range_miles=100.00 max_flight_time_hrs=0.62 cruise_power_kw=352.00
 
 Delta      Primary values:    90.00   120.00   0.62 0.80000000    2   0.22
-           Derived values:   150.00     1.67  72.00 0.00006111
+           Derived values: max_range_miles=150.00 max_flight_time_hrs=1.67 cruise_power_kw=72.00
 
 Echo       Primary values:    30.00   150.00   0.30 5.80000000    2   0.61
-           Derived values:    25.86     0.86 174.00 0.00016944
+           Derived values: max_range_miles=25.86 max_flight_time_hrs=0.86 cruise_power_kw=174.00
 
 Vehicles:
   i  name
 ----------
-  0: Delta
-  1: Delta
-  2: Charlie
-  3: Bravo
-  4: Echo
-  5: Delta
-  6: Alpha
-  7: Alpha
-  8: Delta
+  0: Echo
+  1: Bravo
+  2: Echo
+  3: Alpha
+  4: Delta
+  5: Charlie
+  6: Delta
+  7: Bravo
+  8: Bravo
   9: Alpha
- 10: Echo
- 11: Bravo
- 12: Echo
+ 10: Delta
+ 11: Alpha
+ 12: Alpha
  13: Charlie
- 14: Delta
- 15: Bravo
- 16: Echo
- 17: Echo
- 18: Bravo
+ 14: Echo
+ 15: Delta
+ 16: Alpha
+ 17: Delta
+ 18: Echo
  19: Echo
 
 
 DEBUG: num_steps = 10800
 Done running simulation. Calculating results.
 
-DEBUG:   0:      Delta, num_flights = 2, flight_time_hrs = 1.919722, distance_miles = 172.775000, num_charges = 1, charge_time_hrs = 0.620278, num_faults = 0
-DEBUG:   1:      Delta, num_flights = 2, flight_time_hrs = 1.819722, distance_miles = 163.775000, num_charges = 1, charge_time_hrs = 0.620278, num_faults = 0
-DEBUG:   2:    Charlie, num_flights = 2, flight_time_hrs = 1.250556, distance_miles = 200.088889, num_charges = 2, charge_time_hrs = 1.211944, num_faults = 0
-DEBUG:   3:      Bravo, num_flights = 3, flight_time_hrs = 1.386944, distance_miles = 138.694444, num_charges = 2, charge_time_hrs = 0.400556, num_faults = 0
-DEBUG:   4:       Echo, num_flights = 2, flight_time_hrs = 1.725000, distance_miles = 51.750000, num_charges = 2, charge_time_hrs = 0.453056, num_faults = 1
-DEBUG:   5:      Delta, num_flights = 1, flight_time_hrs = 1.666944, distance_miles = 150.025000, num_charges = 1, charge_time_hrs = 0.052500, num_faults = 0
-DEBUG:   6:      Alpha, num_flights = 1, flight_time_hrs = 1.666667, distance_miles = 200.000000, num_charges = 0, charge_time_hrs = 0.000000, num_faults = 1
-DEBUG:   7:      Alpha, num_flights = 1, flight_time_hrs = 1.666667, distance_miles = 200.000000, num_charges = 0, charge_time_hrs = 0.000000, num_faults = 0
-DEBUG:   8:      Delta, num_flights = 1, flight_time_hrs = 1.666944, distance_miles = 150.025000, num_charges = 0, charge_time_hrs = 0.000000, num_faults = 0
-DEBUG:   9:      Alpha, num_flights = 1, flight_time_hrs = 1.666667, distance_miles = 200.000000, num_charges = 0, charge_time_hrs = 0.000000, num_faults = 0
-DEBUG:  10:       Echo, num_flights = 2, flight_time_hrs = 1.725000, distance_miles = 51.750000, num_charges = 1, charge_time_hrs = 0.300278, num_faults = 2
-DEBUG:  11:      Bravo, num_flights = 2, flight_time_hrs = 1.334444, distance_miles = 133.444444, num_charges = 1, charge_time_hrs = 0.200278, num_faults = 2
-DEBUG:  12:       Echo, num_flights = 2, flight_time_hrs = 1.725000, distance_miles = 51.750000, num_charges = 1, charge_time_hrs = 0.300278, num_faults = 2
-DEBUG:  13:    Charlie, num_flights = 2, flight_time_hrs = 1.250556, distance_miles = 200.088889, num_charges = 1, charge_time_hrs = 0.800556, num_faults = 0
-DEBUG:  14:      Delta, num_flights = 2, flight_time_hrs = 2.278889, distance_miles = 205.100000, num_charges = 1, charge_time_hrs = 0.620278, num_faults = 0
-DEBUG:  15:      Bravo, num_flights = 3, flight_time_hrs = 1.746111, distance_miles = 174.611111, num_charges = 2, charge_time_hrs = 0.400556, num_faults = 0
-DEBUG:  16:       Echo, num_flights = 2, flight_time_hrs = 1.725000, distance_miles = 51.750000, num_charges = 1, charge_time_hrs = 0.300278, num_faults = 0
-DEBUG:  17:       Echo, num_flights = 2, flight_time_hrs = 1.725000, distance_miles = 51.750000, num_charges = 1, charge_time_hrs = 0.300278, num_faults = 0
-DEBUG:  18:      Bravo, num_flights = 2, flight_time_hrs = 1.334444, distance_miles = 133.444444, num_charges = 1, charge_time_hrs = 0.200278, num_faults = 0
-DEBUG:  19:       Echo, num_flights = 2, flight_time_hrs = 1.635556, distance_miles = 49.066667, num_charges = 1, charge_time_hrs = 0.300278, num_faults = 2
+DEBUG:   0:       Echo, num_flights = 2, flight_time_hrs = 1.725000, distance_miles = 51.750000, num_times_waiting = 2, wait_time_hrs = 0.974722, num_charges = 1, charge_time_hrs = 0.300278, flight+wait+charge-time(hrs) = 3.000000, num_faults = 4
+DEBUG:   1:      Bravo, num_flights = 3, flight_time_hrs = 2.001944, distance_miles = 200.194444, num_times_waiting = 2, wait_time_hrs = 0.597500, num_charges = 2, charge_time_hrs = 0.400556, flight+wait+charge-time(hrs) = 3.000000, num_faults = 0
+DEBUG:   2:       Echo, num_flights = 3, flight_time_hrs = 2.356111, distance_miles = 70.683333, num_times_waiting = 2, wait_time_hrs = 0.043333, num_charges = 2, charge_time_hrs = 0.600556, flight+wait+charge-time(hrs) = 3.000000, num_faults = 0
+DEBUG:   3:      Alpha, num_flights = 2, flight_time_hrs = 2.039722, distance_miles = 244.766667, num_times_waiting = 1, wait_time_hrs = 0.360000, num_charges = 1, charge_time_hrs = 0.600278, flight+wait+charge-time(hrs) = 3.000000, num_faults = 0
+DEBUG:   4:      Delta, num_flights = 2, flight_time_hrs = 1.677778, distance_miles = 151.000000, num_times_waiting = 1, wait_time_hrs = 0.701944, num_charges = 1, charge_time_hrs = 0.620278, flight+wait+charge-time(hrs) = 3.000000, num_faults = 0
+DEBUG:   5:    Charlie, num_flights = 2, flight_time_hrs = 1.250556, distance_miles = 200.088889, num_times_waiting = 1, wait_time_hrs = 0.575833, num_charges = 2, charge_time_hrs = 1.173611, flight+wait+charge-time(hrs) = 3.000000, num_faults = 0
+DEBUG:   6:      Delta, num_flights = 1, flight_time_hrs = 1.666944, distance_miles = 150.025000, num_times_waiting = 1, wait_time_hrs = 1.322222, num_charges = 1, charge_time_hrs = 0.010833, flight+wait+charge-time(hrs) = 3.000000, num_faults = 1
+DEBUG:   7:      Bravo, num_flights = 2, flight_time_hrs = 1.334444, distance_miles = 133.444444, num_times_waiting = 2, wait_time_hrs = 1.465278, num_charges = 1, charge_time_hrs = 0.200278, flight+wait+charge-time(hrs) = 3.000000, num_faults = 0
+DEBUG:   8:      Bravo, num_flights = 2, flight_time_hrs = 1.334444, distance_miles = 133.444444, num_times_waiting = 2, wait_time_hrs = 1.465278, num_charges = 1, charge_time_hrs = 0.200278, flight+wait+charge-time(hrs) = 3.000000, num_faults = 1
+DEBUG:   9:      Alpha, num_flights = 1, flight_time_hrs = 1.666667, distance_miles = 200.000000, num_times_waiting = 1, wait_time_hrs = 1.333333, num_charges = 0, charge_time_hrs = 0.000000, flight+wait+charge-time(hrs) = 3.000000, num_faults = 0
+DEBUG:  10:      Delta, num_flights = 1, flight_time_hrs = 1.666944, distance_miles = 150.025000, num_times_waiting = 1, wait_time_hrs = 1.333056, num_charges = 0, charge_time_hrs = 0.000000, flight+wait+charge-time(hrs) = 3.000000, num_faults = 0
+DEBUG:  11:      Alpha, num_flights = 1, flight_time_hrs = 1.666667, distance_miles = 200.000000, num_times_waiting = 1, wait_time_hrs = 1.333333, num_charges = 0, charge_time_hrs = 0.000000, flight+wait+charge-time(hrs) = 3.000000, num_faults = 0
+DEBUG:  12:      Alpha, num_flights = 1, flight_time_hrs = 1.666667, distance_miles = 200.000000, num_times_waiting = 1, wait_time_hrs = 1.333333, num_charges = 0, charge_time_hrs = 0.000000, flight+wait+charge-time(hrs) = 3.000000, num_faults = 0
+DEBUG:  13:    Charlie, num_flights = 2, flight_time_hrs = 1.250556, distance_miles = 200.088889, num_times_waiting = 1, wait_time_hrs = 0.948889, num_charges = 1, charge_time_hrs = 0.800556, flight+wait+charge-time(hrs) = 3.000000, num_faults = 0
+DEBUG:  14:       Echo, num_flights = 2, flight_time_hrs = 1.725000, distance_miles = 51.750000, num_times_waiting = 2, wait_time_hrs = 0.974722, num_charges = 1, charge_time_hrs = 0.300278, flight+wait+charge-time(hrs) = 3.000000, num_faults = 0
+DEBUG:  15:      Delta, num_flights = 2, flight_time_hrs = 2.320556, distance_miles = 208.850000, num_times_waiting = 1, wait_time_hrs = 0.059167, num_charges = 1, charge_time_hrs = 0.620278, flight+wait+charge-time(hrs) = 3.000000, num_faults = 0
+DEBUG:  16:      Alpha, num_flights = 2, flight_time_hrs = 1.720000, distance_miles = 206.400000, num_times_waiting = 1, wait_time_hrs = 0.679722, num_charges = 1, charge_time_hrs = 0.600278, flight+wait+charge-time(hrs) = 3.000000, num_faults = 0
+DEBUG:  17:      Delta, num_flights = 1, flight_time_hrs = 1.666944, distance_miles = 150.025000, num_times_waiting = 1, wait_time_hrs = 1.279722, num_charges = 1, charge_time_hrs = 0.053333, flight+wait+charge-time(hrs) = 3.000000, num_faults = 0
+DEBUG:  18:       Echo, num_flights = 2, flight_time_hrs = 1.725000, distance_miles = 51.750000, num_times_waiting = 2, wait_time_hrs = 0.974722, num_charges = 1, charge_time_hrs = 0.300278, flight+wait+charge-time(hrs) = 3.000000, num_faults = 2
+DEBUG:  19:       Echo, num_flights = 2, flight_time_hrs = 1.725000, distance_miles = 51.750000, num_times_waiting = 2, wait_time_hrs = 0.974722, num_charges = 1, charge_time_hrs = 0.300278, flight+wait+charge-time(hrs) = 3.000000, num_faults = 0
+
 Results by vehicle type:
+- The most important results, in my opinion, are marked with "<====".
 
 Vehicle type: Alpha
-Extra data:
-  num_vehicles                     = 3
-  total_num_flights                = 3
-  total_flight_time_hrs            = 5.000000
-  total_distance_miles             = 600.000000
-  total_num_charges                = 0
-  total_charge_time_hrs            = 0.000000
-Required data:
-  avg_flight_time_per_flight_hrs   = 1.666667
-  avg_distance_per_flight_miles    = 200.000000
-  avg_charge_time_per_session_hrs  = -nan
-  total_num_faults                 = 1
-  total_num_passenger_miles        = 7200.000000
+  Extra data:
+    num_vehicles                     = 5
+    total_num_flights                = 7
+    total_flight_time_hrs            = 8.759722
+    total_distance_miles             = 1051.166667
+    total_num_charges                = 2
+    total_charge_time_hrs            = 1.200556
+    total_num_times_waiting          = 5
+    total_wait_time_hrs              = 5.039722
+    sum of all 3 times (hrs)         = 15.000000
+    avg faults per vehicle           = 0.000000  <==
+    avg passenger miles per vehicle  = 4204.666667  <====
+  Required data:
+    avg_flight_time_per_flight_hrs   = 1.251389
+    avg_distance_per_flight_miles    = 150.166667
+    avg_charge_time_per_session_hrs  = 0.600278
+    total_num_faults                 = 0
+    total_num_passenger_miles        = 21023.333333
 
 Vehicle type: Bravo
-Extra data:
-  num_vehicles                     = 4
-  total_num_flights                = 10
-  total_flight_time_hrs            = 5.801944
-  total_distance_miles             = 580.194444
-  total_num_charges                = 6
-  total_charge_time_hrs            = 1.201667
-Required data:
-  avg_flight_time_per_flight_hrs   = 0.580194
-  avg_distance_per_flight_miles    = 58.019444
-  avg_charge_time_per_session_hrs  = 0.200278
-  total_num_faults                 = 2
-  total_num_passenger_miles        = 11603.888889
+  Extra data:
+    num_vehicles                     = 3
+    total_num_flights                = 7
+    total_flight_time_hrs            = 4.670833
+    total_distance_miles             = 467.083333
+    total_num_charges                = 4
+    total_charge_time_hrs            = 0.801111
+    total_num_times_waiting          = 6
+    total_wait_time_hrs              = 3.528056
+    sum of all 3 times (hrs)         = 9.000000
+    avg faults per vehicle           = 0.333333  <==
+    avg passenger miles per vehicle  = 2335.416667  <====
+  Required data:
+    avg_flight_time_per_flight_hrs   = 0.667262
+    avg_distance_per_flight_miles    = 66.726190
+    avg_charge_time_per_session_hrs  = 0.200278
+    total_num_faults                 = 1
+    total_num_passenger_miles        = 7006.250000
 
 Vehicle type: Charlie
-Extra data:
-  num_vehicles                     = 2
-  total_num_flights                = 4
-  total_flight_time_hrs            = 2.501111
-  total_distance_miles             = 400.177778
-  total_num_charges                = 3
-  total_charge_time_hrs            = 2.012500
-Required data:
-  avg_flight_time_per_flight_hrs   = 0.625278
-  avg_distance_per_flight_miles    = 100.044444
-  avg_charge_time_per_session_hrs  = 0.670833
-  total_num_faults                 = 0
-  total_num_passenger_miles        = 2401.066667
+  Extra data:
+    num_vehicles                     = 2
+    total_num_flights                = 4
+    total_flight_time_hrs            = 2.501111
+    total_distance_miles             = 400.177778
+    total_num_charges                = 3
+    total_charge_time_hrs            = 1.974167
+    total_num_times_waiting          = 2
+    total_wait_time_hrs              = 1.524722
+    sum of all 3 times (hrs)         = 6.000000
+    avg faults per vehicle           = 0.000000  <==
+    avg passenger miles per vehicle  = 1200.533333  <====
+  Required data:
+    avg_flight_time_per_flight_hrs   = 0.625278
+    avg_distance_per_flight_miles    = 100.044444
+    avg_charge_time_per_session_hrs  = 0.658056
+    total_num_faults                 = 0
+    total_num_passenger_miles        = 2401.066667
 
 Vehicle type: Delta
-Extra data:
-  num_vehicles                     = 5
-  total_num_flights                = 8
-  total_flight_time_hrs            = 9.352222
-  total_distance_miles             = 841.700000
-  total_num_charges                = 4
-  total_charge_time_hrs            = 1.913333
-Required data:
-  avg_flight_time_per_flight_hrs   = 1.169028
-  avg_distance_per_flight_miles    = 105.212500
-  avg_charge_time_per_session_hrs  = 0.478333
-  total_num_faults                 = 0
-  total_num_passenger_miles        = 8417.000000
+  Extra data:
+    num_vehicles                     = 5
+    total_num_flights                = 7
+    total_flight_time_hrs            = 8.999167
+    total_distance_miles             = 809.925000
+    total_num_charges                = 4
+    total_charge_time_hrs            = 1.304722
+    total_num_times_waiting          = 5
+    total_wait_time_hrs              = 4.696111
+    sum of all 3 times (hrs)         = 15.000000
+    avg faults per vehicle           = 0.200000  <==
+    avg passenger miles per vehicle  = 1619.850000  <====
+  Required data:
+    avg_flight_time_per_flight_hrs   = 1.285595
+    avg_distance_per_flight_miles    = 115.703571
+    avg_charge_time_per_session_hrs  = 0.326181
+    total_num_faults                 = 1
+    total_num_passenger_miles        = 8099.250000
 
 Vehicle type: Echo
-Extra data:
-  num_vehicles                     = 6
-  total_num_flights                = 12
-  total_flight_time_hrs            = 10.260556
-  total_distance_miles             = 307.816667
-  total_num_charges                = 7
-  total_charge_time_hrs            = 1.954444
-Required data:
-  avg_flight_time_per_flight_hrs   = 0.855046
-  avg_distance_per_flight_miles    = 25.651389
-  avg_charge_time_per_session_hrs  = 0.279206
-  total_num_faults                 = 7
-  total_num_passenger_miles        = 3693.800000
+  Extra data:
+    num_vehicles                     = 5
+    total_num_flights                = 11
+    total_flight_time_hrs            = 9.256111
+    total_distance_miles             = 277.683333
+    total_num_charges                = 6
+    total_charge_time_hrs            = 1.801667
+    total_num_times_waiting          = 10
+    total_wait_time_hrs              = 3.942222
+    sum of all 3 times (hrs)         = 15.000000
+    avg faults per vehicle           = 1.200000  <==
+    avg passenger miles per vehicle  = 555.366667  <====
+  Required data:
+    avg_flight_time_per_flight_hrs   = 0.841465
+    avg_distance_per_flight_miles    = 25.243939
+    avg_charge_time_per_session_hrs  = 0.300278
+    total_num_faults                 = 6
+    total_num_passenger_miles        = 2776.833333
+
+```
+
+
+<a id="run-2-time-binevtol_simulation--just-running-the-simulation-again"></a>
+## Run 2 (`time bin/evtol_simulation`--just running the simulation again)
+
+```bash
+eVTOL_simulation$ time bin/evtol_simulation
+Running simulation
+
+Vehicle types:
+Alpha      Primary values:   120.00   320.00   0.60 1.60000000    4   0.25
+           Derived values: max_range_miles=200.00 max_flight_time_hrs=1.67 cruise_power_kw=192.00
+
+Bravo      Primary values:   100.00   100.00   0.20 1.50000000    5   0.10
+           Derived values: max_range_miles=66.67 max_flight_time_hrs=0.67 cruise_power_kw=150.00
+
+Charlie    Primary values:   160.00   220.00   0.80 2.20000000    3   0.05
+           Derived values: max_range_miles=100.00 max_flight_time_hrs=0.62 cruise_power_kw=352.00
+
+Delta      Primary values:    90.00   120.00   0.62 0.80000000    2   0.22
+           Derived values: max_range_miles=150.00 max_flight_time_hrs=1.67 cruise_power_kw=72.00
+
+Echo       Primary values:    30.00   150.00   0.30 5.80000000    2   0.61
+           Derived values: max_range_miles=25.86 max_flight_time_hrs=0.86 cruise_power_kw=174.00
+
+Vehicles:
+  i  name
+----------
+  0: Echo
+  1: Alpha
+  2: Delta
+  3: Charlie
+  4: Delta
+  5: Delta
+  6: Charlie
+  7: Delta
+  8: Echo
+  9: Delta
+ 10: Bravo
+ 11: Charlie
+ 12: Echo
+ 13: Echo
+ 14: Alpha
+ 15: Charlie
+ 16: Alpha
+ 17: Alpha
+ 18: Delta
+ 19: Echo
+
+
+DEBUG: num_steps = 10800
+Done running simulation. Calculating results.
+
+DEBUG:   0:       Echo, num_flights = 1, flight_time_hrs = 0.862222, distance_miles = 25.866667, num_times_waiting = 1, wait_time_hrs = 2.137778, num_charges = 0, charge_time_hrs = 0.000000, flight+wait+charge-time(hrs) = 3.000000, num_faults = 1
+DEBUG:   1:      Alpha, num_flights = 1, flight_time_hrs = 1.666667, distance_miles = 200.000000, num_times_waiting = 1, wait_time_hrs = 1.333333, num_charges = 0, charge_time_hrs = 0.000000, flight+wait+charge-time(hrs) = 3.000000, num_faults = 0
+DEBUG:   2:      Delta, num_flights = 1, flight_time_hrs = 1.666944, distance_miles = 150.025000, num_times_waiting = 1, wait_time_hrs = 1.333056, num_charges = 0, charge_time_hrs = 0.000000, flight+wait+charge-time(hrs) = 3.000000, num_faults = 0
+DEBUG:   3:    Charlie, num_flights = 2, flight_time_hrs = 1.250556, distance_miles = 200.088889, num_times_waiting = 1, wait_time_hrs = 0.948889, num_charges = 1, charge_time_hrs = 0.800556, flight+wait+charge-time(hrs) = 3.000000, num_faults = 0
+DEBUG:   4:      Delta, num_flights = 1, flight_time_hrs = 1.666944, distance_miles = 150.025000, num_times_waiting = 1, wait_time_hrs = 1.333056, num_charges = 0, charge_time_hrs = 0.000000, flight+wait+charge-time(hrs) = 3.000000, num_faults = 0
+DEBUG:   5:      Delta, num_flights = 1, flight_time_hrs = 1.666944, distance_miles = 150.025000, num_times_waiting = 1, wait_time_hrs = 1.333056, num_charges = 0, charge_time_hrs = 0.000000, flight+wait+charge-time(hrs) = 3.000000, num_faults = 0
+DEBUG:   6:    Charlie, num_flights = 2, flight_time_hrs = 1.250556, distance_miles = 200.088889, num_times_waiting = 1, wait_time_hrs = 0.948889, num_charges = 1, charge_time_hrs = 0.800556, flight+wait+charge-time(hrs) = 3.000000, num_faults = 0
+DEBUG:   7:      Delta, num_flights = 1, flight_time_hrs = 1.666944, distance_miles = 150.025000, num_times_waiting = 1, wait_time_hrs = 1.333056, num_charges = 0, charge_time_hrs = 0.000000, flight+wait+charge-time(hrs) = 3.000000, num_faults = 0
+DEBUG:   8:       Echo, num_flights = 2, flight_time_hrs = 1.725000, distance_miles = 51.750000, num_times_waiting = 2, wait_time_hrs = 0.974722, num_charges = 1, charge_time_hrs = 0.300278, flight+wait+charge-time(hrs) = 3.000000, num_faults = 1
+DEBUG:   9:      Delta, num_flights = 2, flight_time_hrs = 2.320556, distance_miles = 208.850000, num_times_waiting = 1, wait_time_hrs = 0.059167, num_charges = 1, charge_time_hrs = 0.620278, flight+wait+charge-time(hrs) = 3.000000, num_faults = 0
+DEBUG:  10:      Bravo, num_flights = 3, flight_time_hrs = 1.787778, distance_miles = 178.777778, num_times_waiting = 2, wait_time_hrs = 0.811667, num_charges = 2, charge_time_hrs = 0.400556, flight+wait+charge-time(hrs) = 3.000000, num_faults = 0
+DEBUG:  11:    Charlie, num_flights = 2, flight_time_hrs = 1.250556, distance_miles = 200.088889, num_times_waiting = 1, wait_time_hrs = 0.495556, num_charges = 2, charge_time_hrs = 1.253889, flight+wait+charge-time(hrs) = 3.000000, num_faults = 0
+DEBUG:  12:       Echo, num_flights = 2, flight_time_hrs = 1.725000, distance_miles = 51.750000, num_times_waiting = 2, wait_time_hrs = 0.974722, num_charges = 1, charge_time_hrs = 0.300278, flight+wait+charge-time(hrs) = 3.000000, num_faults = 0
+DEBUG:  13:       Echo, num_flights = 2, flight_time_hrs = 1.725000, distance_miles = 51.750000, num_times_waiting = 2, wait_time_hrs = 0.974722, num_charges = 1, charge_time_hrs = 0.300278, flight+wait+charge-time(hrs) = 3.000000, num_faults = 1
+DEBUG:  14:      Alpha, num_flights = 2, flight_time_hrs = 2.340278, distance_miles = 280.833333, num_times_waiting = 1, wait_time_hrs = 0.059444, num_charges = 1, charge_time_hrs = 0.600278, flight+wait+charge-time(hrs) = 3.000000, num_faults = 1
+DEBUG:  15:    Charlie, num_flights = 2, flight_time_hrs = 0.898333, distance_miles = 143.733333, num_times_waiting = 1, wait_time_hrs = 1.301111, num_charges = 1, charge_time_hrs = 0.800556, flight+wait+charge-time(hrs) = 3.000000, num_faults = 1
+DEBUG:  16:      Alpha, num_flights = 2, flight_time_hrs = 1.740000, distance_miles = 208.800000, num_times_waiting = 1, wait_time_hrs = 0.659722, num_charges = 1, charge_time_hrs = 0.600278, flight+wait+charge-time(hrs) = 3.000000, num_faults = 0
+DEBUG:  17:      Alpha, num_flights = 1, flight_time_hrs = 1.666667, distance_miles = 200.000000, num_times_waiting = 1, wait_time_hrs = 1.060278, num_charges = 1, charge_time_hrs = 0.273056, flight+wait+charge-time(hrs) = 3.000000, num_faults = 1
+DEBUG:  18:      Delta, num_flights = 1, flight_time_hrs = 1.666944, distance_miles = 150.025000, num_times_waiting = 1, wait_time_hrs = 1.259722, num_charges = 1, charge_time_hrs = 0.073333, flight+wait+charge-time(hrs) = 3.000000, num_faults = 0
+DEBUG:  19:       Echo, num_flights = 1, flight_time_hrs = 0.862222, distance_miles = 25.866667, num_times_waiting = 1, wait_time_hrs = 2.137778, num_charges = 0, charge_time_hrs = 0.000000, flight+wait+charge-time(hrs) = 3.000000, num_faults = 2
+
+Results by vehicle type:
+- The most important results, in my opinion, are marked with "<====".
+
+Vehicle type: Alpha
+  Extra data:
+    num_vehicles                     = 4
+    total_num_flights                = 6
+    total_flight_time_hrs            = 7.413611
+    total_distance_miles             = 889.633333
+    total_num_charges                = 3
+    total_charge_time_hrs            = 1.473611
+    total_num_times_waiting          = 4
+    total_wait_time_hrs              = 3.112778
+    sum of all 3 times (hrs)         = 12.000000
+    avg faults per vehicle           = 0.500000  <==
+    avg passenger miles per vehicle  = 3558.533333  <====
+  Required data:
+    avg_flight_time_per_flight_hrs   = 1.235602
+    avg_distance_per_flight_miles    = 148.272222
+    avg_charge_time_per_session_hrs  = 0.491204
+    total_num_faults                 = 2
+    total_num_passenger_miles        = 14234.133333
+
+Vehicle type: Bravo
+  Extra data:
+    num_vehicles                     = 1
+    total_num_flights                = 3
+    total_flight_time_hrs            = 1.787778
+    total_distance_miles             = 178.777778
+    total_num_charges                = 2
+    total_charge_time_hrs            = 0.400556
+    total_num_times_waiting          = 2
+    total_wait_time_hrs              = 0.811667
+    sum of all 3 times (hrs)         = 3.000000
+    avg faults per vehicle           = 0.000000  <==
+    avg passenger miles per vehicle  = 893.888889  <====
+  Required data:
+    avg_flight_time_per_flight_hrs   = 0.595926
+    avg_distance_per_flight_miles    = 59.592593
+    avg_charge_time_per_session_hrs  = 0.200278
+    total_num_faults                 = 0
+    total_num_passenger_miles        = 893.888889
+
+Vehicle type: Charlie
+  Extra data:
+    num_vehicles                     = 4
+    total_num_flights                = 8
+    total_flight_time_hrs            = 4.650000
+    total_distance_miles             = 744.000000
+    total_num_charges                = 5
+    total_charge_time_hrs            = 3.655556
+    total_num_times_waiting          = 4
+    total_wait_time_hrs              = 3.694444
+    sum of all 3 times (hrs)         = 12.000000
+    avg faults per vehicle           = 0.250000  <==
+    avg passenger miles per vehicle  = 2232.000000  <====
+  Required data:
+    avg_flight_time_per_flight_hrs   = 0.581250
+    avg_distance_per_flight_miles    = 93.000000
+    avg_charge_time_per_session_hrs  = 0.731111
+    total_num_faults                 = 1
+    total_num_passenger_miles        = 8928.000000
+
+Vehicle type: Delta
+  Extra data:
+    num_vehicles                     = 6
+    total_num_flights                = 7
+    total_flight_time_hrs            = 10.655278
+    total_distance_miles             = 958.975000
+    total_num_charges                = 2
+    total_charge_time_hrs            = 0.693611
+    total_num_times_waiting          = 6
+    total_wait_time_hrs              = 6.651111
+    sum of all 3 times (hrs)         = 18.000000
+    avg faults per vehicle           = 0.000000  <==
+    avg passenger miles per vehicle  = 1917.950000  <====
+  Required data:
+    avg_flight_time_per_flight_hrs   = 1.522183
+    avg_distance_per_flight_miles    = 136.996429
+    avg_charge_time_per_session_hrs  = 0.346806
+    total_num_faults                 = 0
+    total_num_passenger_miles        = 11507.700000
+
+Vehicle type: Echo
+  Extra data:
+    num_vehicles                     = 5
+    total_num_flights                = 8
+    total_flight_time_hrs            = 6.899444
+    total_distance_miles             = 206.983333
+    total_num_charges                = 3
+    total_charge_time_hrs            = 0.900833
+    total_num_times_waiting          = 8
+    total_wait_time_hrs              = 7.199722
+    sum of all 3 times (hrs)         = 15.000000
+    avg faults per vehicle           = 1.000000  <==
+    avg passenger miles per vehicle  = 413.966667  <====
+  Required data:
+    avg_flight_time_per_flight_hrs   = 0.862431
+    avg_distance_per_flight_miles    = 25.872917
+    avg_charge_time_per_session_hrs  = 0.300278
+    total_num_faults                 = 5
+    total_num_passenger_miles        = 2069.833333
+
+
+real    0m0.005s
+user    0m0.005s
+sys 0m0.000s
 ```
