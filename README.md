@@ -1,5 +1,6 @@
 # eVTOL_simulation
-a crude simulator to simulate some battery usage, range, recharging and stuff
+
+Homework problem: a simulator to simulate some eVTOL aircraft flying around to see how they perform carrying passengers when limited chargers are available and they all have different specs. 
 
 
 # Table of Contents
@@ -27,7 +28,7 @@ a crude simulator to simulate some battery usage, range, recharging and stuff
 1. (optional) add namespaces to modules
 
 Next:
-1. [ ] add clang-format
+1. [x] add clang-format
 1. [x] add gtest and a few basic unit tests
     1. [x] add a test fixture as a `FRIEND_TEST` in order to test private class functions. See example gtest code here!: https://github.com/google/googletest/blob/main/docs/advanced.md#testing-private-code
 1. [x] finish/fix all build instructions below
