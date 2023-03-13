@@ -1,10 +1,6 @@
 /*
 Main simulation file
 
-Todo:
-1. [ ] break apart into multiple modules, each with a header and source file.
-1. [ ] add setters and getters, perhaps
-
 Provided Assumptions
 - Each vehicle starts the simulation with a fully-charged battery
 - Each vehicle instantaneously reaches Cruise Speed
@@ -27,7 +23,6 @@ Additional Assumptions:
 
 // C++ includes
 #include <iostream>
-// #include <queue> ///////////////
 #include <random>
 #include <string>
 #include <unordered_set>
@@ -177,9 +172,8 @@ struct Vehicle_stats
     Vehicle_state last_state = Vehicle_state::CHARGING;
 };
 
-class Vehicle
+struct Vehicle
 {
-public:
     // constructor
     Vehicle(Vehicle_type* type_)
     : type{type_}
@@ -188,9 +182,10 @@ public:
         stats.battery_state_of_charge_kwh = type->battery_capacity_kwh;
     }
 
-    Vehicle_type* type; // ptr to the vehicle type this vehicle is
+    // ptr to the vehicle type this vehicle is; don't copy the whole `Vehicle_type` struct into
+    // each vehicle; just point to the data
+    Vehicle_type* type;
     Vehicle_stats stats;
-private:
 };
 
 class Simulation
@@ -329,7 +324,7 @@ public:
     /// Print required simulation results
     void print_results()
     {
-        printf("Results by vehicle type:\n\n");
+        printf("\nResults by vehicle type:\n\n");
 
         for (Vehicle_type& vehicle_type : _vehicle_types)
         {
@@ -342,6 +337,7 @@ public:
                 "  total_distance_miles             = %f\n"
                 "  total_num_charges                = %u\n"
                 "  total_charge_time_hrs            = %f\n"
+                /////////// avg passenger miles per vehicle
                 "Required data:\n"
                 "  avg_flight_time_per_flight_hrs   = %f\n"
                 "  avg_distance_per_flight_miles    = %f\n"
@@ -371,8 +367,6 @@ private:
     std::vector<Vehicle> _vehicles;
     /// Used to keep track of whether or not a particular vehicle type has already been added
     std::unordered_set<std::string> _vehicle_type_names;
-    /// FIFO queue to store the line of cars waiting to charge next
-    // std::queue<Vehicle* vehicle> _charge_queue;////////////
 
     const uint32_t _num_chargers;
     const double _simulation_duration_hrs;
@@ -414,7 +408,6 @@ private:
         }
 
         // get in the charge line
-        // _charge_queue.push(vehicle);////////////
         vehicle->stats.state = Vehicle_state::WAITING_FOR_CHARGER;
     }
 
@@ -508,7 +501,7 @@ int main()
 
     simulation.print_vehicle_types();
 
-    // Randomly populate the correct number of vehicles
+    // Randomly populate the correct total number of vehicles
     simulation.populate_vehicles(NUM_VEHICLES);
     simulation.print_vehicles();
 
