@@ -2,10 +2,27 @@
 a crude simulator to simulate some battery usage, range, recharging and stuff
 
 
+# Table of Contents
+<details>
+<summary><b>(click to expand)</b></summary>
+<!-- MarkdownTOC -->
+
+1. [TODO:](#todo)
+1. [References:](#references)
+1. [Build](#build)
+1. [Sample runs and output](#sample-runs-and-output)
+    1. [Run 1](#run-1)
+    1. [Run 2](#run-2)
+
+<!-- /MarkdownTOC -->
+</details>
+
+
+<a id="todo"></a>
 # TODO:
 
 1. [ ] break apart into multiple modules, each with a header and source file.
-1. [no] add setters and getters, perhaps; nah.
+1. [nah] add setters and getters, perhaps; nah.
 
 Next:
 1. [ ] add clang-format
@@ -14,15 +31,18 @@ Next:
 1. [ ] finish/fix all build instructions below
 
 
+<a id="references"></a>
 # References:
 
 1. https://en.cppreference.com/w/cpp/numeric/random
 1. https://en.wikipedia.org/wiki/Monte_Carlo_method
+1. [my answer] [How to install Google Test (`gtest`) and Google Mock (`gmock`) as shared, static `.a` libraries, system-wide, on Linux/Unix](https://stackoverflow.com/a/75718815/4561887)
 
 
+<a id="build"></a>
 # Build
 
-Install dependencies
+Install dependencies:
 ```bash
 sudo apt install ccache
 # git lfs; see: https://packagecloud.io/github/git-lfs/install
@@ -48,7 +68,7 @@ sudo make install    # Install the .a library files, and headers, into
                         # /user/local/.
 ```
 
-Now get this repo
+Get this repo:
 ```bash
 # get this repo
 git clone https://github.com/ElectricRCAircraftGuy/eVTOL_simulation.git
@@ -57,23 +77,21 @@ git lfs pull
 git submodule update --init --recursive
 
 # build and run gtest unit tests
+# TODO
 
 # build and run the simulation
-```
-
-
-```bash
-# build and run
 ./build.sh
 
-# just run (timing how long the run takes)
+# Just run the already-built simulation, without rebuilding
 time bin/evtol_simulation
 ```
 
 
+<a id="sample-runs-and-output"></a>
 # Sample runs and output
 
 
+<a id="run-1"></a>
 ## Run 1
 
 ```bash
@@ -231,6 +249,7 @@ Required data:
 ```
 
 
+<a id="run-2"></a>
 ## Run 2
 
 ```bash
