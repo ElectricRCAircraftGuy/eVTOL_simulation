@@ -27,7 +27,7 @@ a crude simulator to simulate some battery usage, range, recharging and stuff
 Next:
 1. [ ] add clang-format
 1. [ ] add gtest and a few basic unit tests
-    1. [ ] add a test fixture as a `FRIEND_TEST` in order to test private class functions
+    1. [ ] add a test fixture as a `FRIEND_TEST` in order to test private class functions. See example gtest code here!: https://github.com/google/googletest/blob/main/docs/advanced.md#testing-private-code
 1. [ ] finish/fix all build instructions below
 
 
