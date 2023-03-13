@@ -7,15 +7,15 @@ Vehicle_type::Vehicle_type(std::string name_,
                            double energy_used_kwh_per_mile_,
                            uint32_t passengers_per_vehicle_,
                            double prob_fault_per_hr_) :
-    name{name_}  // primary values
-    ,
+    name{name_},
+    // primary values
     cruise_speed_mph{cruise_speed_mph_},
     battery_capacity_kwh{battery_capacity_kwh_},
     time_to_charge_hrs{time_to_charge_hrs_},
     energy_used_kwh_per_mile{energy_used_kwh_per_mile_},
     passengers_per_vehicle{passengers_per_vehicle_},
-    prob_fault_per_hr{prob_fault_per_hr_}  // derived values
-    ,
+    prob_fault_per_hr{prob_fault_per_hr_},
+    // derived values
     max_range_miles{battery_capacity_kwh / energy_used_kwh_per_mile},
     max_flight_time_hrs{max_range_miles / cruise_speed_mph},
     cruise_power_kw{battery_capacity_kwh / max_flight_time_hrs}
