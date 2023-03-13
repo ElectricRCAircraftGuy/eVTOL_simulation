@@ -69,8 +69,20 @@ build_and_run_unit_tests()
 }
 
 main() {
-    # build_and_run_unit_tests
-    build_and_run_program
+    if [ "$#" -eq 0 ]; then
+        # if no args, build and run both
+        echo "No arguments; building and running both unit tests and the main program."
+        build_and_run_unit_tests
+        build_and_run_program
+    elif [ "$1" = "tests" ]; then
+        # build and run tests only
+        echo "Building and running unit tests only."
+        build_and_run_unit_tests
+    elif [ "$1" = "main" ]; then
+        # build and run the main program only
+        echo "Building and running the main program only."
+        build_and_run_program
+    fi
 }
 
 # Determine if the script is being sourced or executed (run).
@@ -88,5 +100,5 @@ fi
 # Only run `main` if this script is being **run**, NOT sourced (imported).
 # - See my answer: https://stackoverflow.com/a/70662116/4561887
 if [ "$__name__" = "__main__" ]; then
-    main
+    main "$@"
 fi

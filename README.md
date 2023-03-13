@@ -99,12 +99,29 @@ git clone https://github.com/ElectricRCAircraftGuy/eVTOL_simulation.git
 cd eVTOL_simulation
 git lfs pull
 git submodule update --init --recursive
+```
 
-# build and run gtest unit tests
-# TODO
+Update this repo whenever you need to pull my latest changes:
+```bash
+git pull  
+git lfs pull  
+git submodule update --init --recursive
+```
 
-# build and run the simulation
-./build.sh
+Build and run the program
+```bash
+# build and run both the unit tests and main program
+./build.sh 
+
+# build and run ONLY the unit tests
+./build.sh tests 
+
+# build and run ONLY the main program
+./build.sh main 
+
+
+# Just run the already-built unit tests, without rebuilding
+time bin/evtol_simulation_unittest
 
 # Just run the already-built simulation, without rebuilding
 time bin/evtol_simulation
