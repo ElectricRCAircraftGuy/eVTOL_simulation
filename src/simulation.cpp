@@ -36,7 +36,7 @@ void Simulation::populate_vehicles(uint32_t num_vehicles)
         // of this type
         uint32_t i_vehicle_type = distribution(_generator);
         Vehicle random_vehicle{&_vehicle_types[i_vehicle_type]};
-        _vehicles.push_back(random_vehicle);
+        _vehicles.emplace_back(random_vehicle);
     }
 }
 

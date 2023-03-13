@@ -23,7 +23,7 @@ To learn to use gtest, here are some helpful docs to get started:
 // Linux includes
 // NA
 
-// C and C++ includes
+// C++ includes
 // NA
 
 
@@ -35,6 +35,18 @@ To learn to use gtest, here are some helpful docs to get started:
 class SimulationTestFixture : public ::testing::Test
 {
 protected:
+    // Runs once at the beginning of each test utilizing this test fixture.
+    void SetUp() override
+    {
+        // TODO
+    }
+
+    // Runs once at the end of each test utilizing this test fixture.
+    void TearDown() override
+    {
+        // TODO
+    }
+
     // provide getters to expose private members of class `Simulation`, for testing
 
     std::vector<Vehicle_type>* get_vehicle_types(Simulation* simulation)
@@ -42,20 +54,29 @@ protected:
         return &simulation->_vehicle_types;
     }
 
-    std::vector<Vehicle> _vehicles;
+    // TODO: expose other private members of the `Simulation` class here, so that many tests can
+    // utilize this test fixture rather than having to make every `TEST()` class a friend
+    // to the `Simulation` class.
 };
-
-// anonymous namespace
-namespace
-{
 
 /// Do general end-to-end testing checks, as able, to ensure the whole simulation produces expected
 /// results
+///
+/// See TODO just above. For now I'll just make this test a friend to the `Simulation` class so I
+/// don't have to write a ton of getters to private members in the test fixture. It makes sense
+/// to write the getters in the text fixture instead, however, if it is used tons of times.
 TEST_F(SimulationTestFixture, EndToEndTest)
 {
-    Simulation simulation{NUM_CHARGERS, SIMULATION_DURATION_HRS, SIMULATION_STEP_SIZE_HRS};
+    constexpr uint32_t num_chargers = 3;
+    constexpr double simulation_duration_hrs = 3.0;
+    // 1 second time step size
+    constexpr double simulation_step_size_hrs = 1.0/(double)SECONDS_PER_HR;
 
+    Simulation simulation{num_chargers, simulation_duration_hrs, simulation_step_size_hrs};
 
+    EXPECT_EQ(simulation._num_chargers, 3);
+    EXPECT_EQ(simulation._simulation_duration_hrs, 3.0);
+    EXPECT_EQ(simulation._simulation_step_size_hrs, 1.0/(double)SECONDS_PER_HR);
 
     // Add the various company vehicle types and stats
     // clang-format off
@@ -66,42 +87,106 @@ TEST_F(SimulationTestFixture, EndToEndTest)
     simulation.add_vehicle_type({"Echo",     30,  150, 0.3,  5.8, 2, 0.61});
     // clang-format on
 
-    simulation.print_vehicle_types();
+    // simulation.print_vehicle_types(); // debugging
 
     std::vector<Vehicle_type>* vehicle_types = get_vehicle_types(&simulation);
 
-    // Ensure they were added properly
+    // Check the whole vector
 
     EXPECT_EQ(vehicle_types->size(), 5) << "This many vehicles should be in the vector.";
+    EXPECT_EQ((*vehicle_types)[0].name, "Alpha");
+    EXPECT_EQ((*vehicle_types)[1].name, "Bravo");
+    EXPECT_EQ((*vehicle_types)[2].name, "Charlie");
+    EXPECT_EQ((*vehicle_types)[3].name, "Delta");
+    EXPECT_EQ((*vehicle_types)[4].name, "Echo");
 
+    // Check individual values of just one vehicle type in the vector
+
+    Vehicle_type* vehicle_alpha = &((*vehicle_types)[0]);
     // primary values
-    EXPECT_EQ(vehicle_types->name, "Alpha");
-    EXPECT_FLOAT_EQ(vehicle_types->cruise_speed_mph, 120);
-    EXPECT_FLOAT_EQ(vehicle_types->battery_capacity_kwh, 320);
-    EXPECT_FLOAT_EQ(vehicle_types->time_to_charge_hrs, 0.6);
-    EXPECT_FLOAT_EQ(vehicle_types->energy_used_kwh_per_mile, 1.6);
-    EXPECT_EQ(vehicle_types->passengers_per_vehicle, 4);
-    EXPECT_FLOAT_EQ(vehicle_types->prob_fault_per_hr, 0.25);
+    EXPECT_EQ(vehicle_alpha->name, "Alpha");
+    EXPECT_FLOAT_EQ(vehicle_alpha->cruise_speed_mph, 120);
+    EXPECT_FLOAT_EQ(vehicle_alpha->battery_capacity_kwh, 320);
+    EXPECT_FLOAT_EQ(vehicle_alpha->time_to_charge_hrs, 0.6);
+    EXPECT_FLOAT_EQ(vehicle_alpha->energy_used_kwh_per_mile, 1.6);
+    EXPECT_EQ(vehicle_alpha->passengers_per_vehicle, 4);
+    EXPECT_FLOAT_EQ(vehicle_alpha->prob_fault_per_hr, 0.25);
     // derived values
-    EXPECT_FLOAT_EQ(vehicle_types->max_range_miles, 320.0/1.6); // kwh / khw/mile = miles
-    EXPECT_FLOAT_EQ(vehicle_types->max_flight_time_hrs, 320.0/1.6/120); // miles / miles/hr = hr
-    EXPECT_FLOAT_EQ(vehicle_types->cruise_power_kw, 320.0/(320.0/1.6/120));
+    EXPECT_FLOAT_EQ(vehicle_alpha->max_range_miles, 320.0/1.6); // kwh / khw/mile = miles
+    EXPECT_FLOAT_EQ(vehicle_alpha->max_flight_time_hrs, 320.0/1.6/120); // miles / miles/hr = hr
+    EXPECT_FLOAT_EQ(vehicle_alpha->cruise_power_kw, 320.0/(320.0/1.6/120));
 
-
-
-
-    // Check the first one
-    // get_vehicle_types
 
     // Randomly populate the correct total number of vehicles
     simulation.populate_vehicles(NUM_VEHICLES);
-    simulation.print_vehicles();
+    // simulation.print_vehicles(); // debugging
+    EXPECT_EQ(simulation._vehicles.size(), 20);
 
     simulation.run();
-    simulation.print_results();
+    // simulation.print_results(); // debugging
+
+    // Ensure each vehicle has a total flight+waiting+charging time duration equal to the simulation
+    // duration, +/- some delta
+    constexpr double allowed_delta_hrs = 0.01;
+    for (size_t i = 0; i < simulation._vehicles.size(); i++)
+    {
+        const Vehicle_stats& stats = simulation._vehicles[i].stats;
+        EXPECT_LE(simulation_duration_hrs, stats.flight_time_hrs + stats.wait_time_hrs
+            + stats.charge_time_hrs + allowed_delta_hrs) << "i = " << i << "\n";
+        EXPECT_GE(simulation_duration_hrs, stats.flight_time_hrs + stats.wait_time_hrs
+            + stats.charge_time_hrs - allowed_delta_hrs) << "i = " << i << "\n";
+    }
 }
 
-////// Unit test: ensure flight time + wait time + charge time for all 3 vehicles is ~ 3 hrs (+/- 0.01 hrs)
+/// Do a trivial end-to-end simulation where all the vehicles do is fly and charge (no waiting).
+/// Ensure that the total flight and charge times are as expected.
+TEST(Simulation, TrivialEndToEnd)
+{
+    constexpr uint32_t num_chargers = 3;
+    constexpr double simulation_duration_hrs = 3.0;
+    constexpr double simulation_step_size_hrs = 1.0/(double)SECONDS_PER_HR;
 
-} // anonymous namespace
+    Simulation simulation{num_chargers, simulation_duration_hrs, simulation_step_size_hrs};
+
+    simulation.add_vehicle_type({"Alpha",    120, 320, 0.6,  1.6, 4, 0.25});
+    simulation.add_vehicle_type({"Bravo",    100, 100, 0.2,  1.5, 5, 0.10});
+    simulation.add_vehicle_type({"Charlie",  160, 220, 0.8,  2.2, 3, 0.05});
+
+    // simulation.print_vehicle_types(); // debugging
+
+    // Force 1 of each vehicle above
+    simulation._vehicles.emplace_back(Vehicle{&simulation._vehicle_types[0]});
+    simulation._vehicles.emplace_back(Vehicle{&simulation._vehicle_types[1]});
+    simulation._vehicles.emplace_back(Vehicle{&simulation._vehicle_types[2]});
+
+    // Now run the simulation and check for expected results
+
+    simulation.run();
+    // simulation.print_results(); // debugging
+
+    constexpr double allowed_error = 0.01;
+
+    const Vehicle_type_stats* stats = nullptr;
+
+    // Alpha
+    stats = &(simulation._vehicle_types[0].stats);
+    EXPECT_EQ(stats->total_num_flights, 2);
+    EXPECT_LE(stats->total_num_passenger_miles, 1151.87 + allowed_error);
+    EXPECT_GE(stats->total_num_passenger_miles, 1151.87 - allowed_error);
+    // TODO: check for other expected values in `stats` here.
+
+    // Bravo
+    stats = &(simulation._vehicle_types[1].stats);
+    EXPECT_EQ(stats->total_num_flights, 4);
+    EXPECT_LE(stats->total_num_passenger_miles, 1199.58 + allowed_error);
+    EXPECT_GE(stats->total_num_passenger_miles, 1199.58 - allowed_error);
+    // TODO: check for other expected values in `stats` here.
+
+    // Charlie
+    stats = &(simulation._vehicle_types[2].stats);
+    EXPECT_EQ(stats->total_num_flights, 3);
+    EXPECT_LE(stats->total_num_passenger_miles, 671.60 + allowed_error);
+    EXPECT_GE(stats->total_num_passenger_miles, 671.60 - allowed_error);
+    // TODO: check for other expected values in `stats` here.
+}
 

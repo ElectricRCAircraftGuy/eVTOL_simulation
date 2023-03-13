@@ -9,7 +9,7 @@ Simulation class module
 #include "vehicle.h"
 
 // 3rd-party library includes
-// NA
+#include <gtest/gtest_prod.h> // for `FRIEND_TEST()` macro
 
 // Linux includes
 // NA
@@ -83,5 +83,9 @@ private:
     /// Iterate one time step forward in the simulation for one vehicle
     void iterate(Vehicle* vehicle);
 
+    // for unit testing private members of this class
+
     friend class SimulationTestFixture;
+    FRIEND_TEST(SimulationTestFixture, EndToEndTest);
+    FRIEND_TEST(Simulation, TrivialEndToEnd);
 };

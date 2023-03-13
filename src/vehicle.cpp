@@ -27,7 +27,8 @@ void Vehicle_type::print() const
 {
     printf(
         "%-10s Primary values: %8.2f %8.2f %6.2f %6.8f %4u %6.2f\n"
-        "           Derived values: %8.2f %8.2f %6.2f %6.8f\n\n",
+        "           Derived values: max_range_miles=%.2f max_flight_time_hrs=%.2f "
+        "cruise_power_kw=%.2f\n\n",
         name.c_str(),
         // primary values
         cruise_speed_mph,
