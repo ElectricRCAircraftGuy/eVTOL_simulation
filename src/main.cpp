@@ -2,35 +2,19 @@
 Main simulation file
 */
 
+// comment this out to disable debug prints throughout the entire program, in all modules
+#define DEBUG
+
+
 // local includes
 #include "simulation.h"
-#include "vehicle.h"
 
 // Linux includes
 // NA
 
 // C++ includes
 #include <iostream>
-#include <random>
-#include <string>
-#include <unordered_set>
-#include <vector>
 
-
-#define DEBUG // comment this out to disable debug prints
-
-/// Debug printf function.
-/// See https://stackoverflow.com/a/67667132/4561887
-#ifdef DEBUG
-    #define DEBUG_PRINTF(...) printf("DEBUG: " __VA_ARGS__)
-#else
-    #define DEBUG_PRINTF(...) \
-        do                    \
-        {                     \
-        } while (0)
-#endif
-
-#define SECONDS_PER_HR 3600UL
 
 // TODO: read these as input arguments to `main()`, to rapidly run a variety of simulations.
 constexpr uint32_t NUM_VEHICLES = 20;
