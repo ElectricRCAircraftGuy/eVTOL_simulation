@@ -69,9 +69,12 @@ Next:
 
 Install dependencies:
 ```bash
+# ccache
 sudo apt install ccache
 # git lfs; see: https://packagecloud.io/github/git-lfs/install
 curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+# clang-format
+sudo apt install clang-format
 
 # install gtest
 # From my full instructions here: https://stackoverflow.com/a/75718815/4561887
@@ -107,6 +110,12 @@ Update this repo whenever you need to pull my latest changes:
 git pull  
 git lfs pull  
 git submodule update --init --recursive
+```
+
+Run clang-format to auto-format the C++ code:
+```bash
+# from the root of the repo
+./run_clang-format.sh
 ```
 
 Build and run the program
