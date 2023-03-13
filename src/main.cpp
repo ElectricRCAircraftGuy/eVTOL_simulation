@@ -2,9 +2,6 @@
 Main simulation file
 */
 
-// comment this out to disable debug prints throughout the entire program, in all modules
-#define DEBUG
-
 // local includes
 #include "simulation.h"
 #include "simulation_params.h"

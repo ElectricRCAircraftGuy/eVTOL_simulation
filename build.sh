@@ -15,11 +15,16 @@ SRC_FILES_COMMON=(
     "src/vehicle.cpp"
 )
 
+
 build_and_run_program()
 {
     SRC_FILES=(
         "src/main.cpp"
         "${SRC_FILES_COMMON[@]}"
+    )
+    CUSTOM_DEFINES=(
+        # uncomment to turn debug prints ON throughout the whole program (see "utils.h")
+        "-DDEBUG"
     )
     EXECUTABLE_NAME="evtol_simulation"
 
@@ -30,8 +35,8 @@ build_and_run_program()
     mkdir -p bin
 
     echo "Building..."
-    time ccache g++ -Wall -Wextra -Werror -O3 -std=gnu++17 "${SRC_FILES[@]}" \
-        -I"src" -o "bin/$EXECUTABLE_NAME"
+    time ccache g++ -Wall -Wextra -Werror -O3 -std=gnu++17 "${CUSTOM_DEFINES[@]}" \
+        "${SRC_FILES[@]}" -I"src" -o "bin/$EXECUTABLE_NAME"
 
     return_code="$?"
     if [ "$return_code" -eq 0 ]; then
@@ -49,6 +54,10 @@ build_and_run_unit_tests()
         "src/main_unittest.cpp"
         "${SRC_FILES_COMMON[@]}"
     )
+    CUSTOM_DEFINES=(
+        # uncomment to turn debug prints ON throughout the whole program (see "utils.h")
+        # "-DDEBUG"
+    )
     EXECUTABLE_NAME="evtol_simulation_unittest"
 
 
@@ -59,8 +68,8 @@ build_and_run_unit_tests()
     mkdir -p bin
 
     echo "Building..."
-    time ccache g++ -Wall -Wextra -Werror -O3 -std=gnu++17 -pthread "${SRC_FILES[@]}" \
-        -lgtest -lgtest_main -o "bin/$EXECUTABLE_NAME"
+    time ccache g++ -Wall -Wextra -Werror -O3 -std=gnu++17 -pthread "${CUSTOM_DEFINES[@]}" \
+        "${SRC_FILES[@]}" -lgtest -lgtest_main -o "bin/$EXECUTABLE_NAME"
 
     return_code="$?"
     if [ "$return_code" -eq 0 ]; then
