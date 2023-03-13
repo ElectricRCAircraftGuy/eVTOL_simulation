@@ -11,6 +11,7 @@ Homework problem: a simulator to simulate some eVTOL aircraft flying around to s
 1. [TODO:](#todo)
 1. [References:](#references)
 1. [Assumptions](#assumptions)
+1. [Notes to self](#notes-to-self)
 1. [Build](#build)
 1. [Sample runs and output](#sample-runs-and-output)
     1. [Run 1 \(`./build.sh`--full build and run of unit tests and simulation\)](#run-1-buildsh--full-build-and-run-of-unit-tests-and-simulation)
@@ -62,6 +63,15 @@ Next:
       and operations at the predicted real-time cadence.
     - once a vehicle gets on the charger, it will stay there until full
     - each vehicle is fully loaded with passengers every flight
+
+
+<a id="notes-to-self"></a>
+# Notes to self
+
+1. To see the full effect of what `clang-format` did, as I tweak the `.clang-format` config file and all, run this:
+    ```bash
+    git difftool 1f8e7ec86e29eb630924459fbbccb8ed77d9070d..e1c49be9e7037c86596341e43decaacc7c6863e8
+    ```
 
 
 <a id="build"></a>
