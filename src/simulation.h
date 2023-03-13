@@ -8,6 +8,9 @@ Simulation class module
 #include "utils.h"
 #include "vehicle.h"
 
+// 3rd-party library includes
+// NA
+
 // Linux includes
 // NA
 
@@ -79,4 +82,6 @@ private:
 
     /// Iterate one time step forward in the simulation for one vehicle
     void iterate(Vehicle* vehicle);
+
+    friend class SimulationTestFixture;
 };

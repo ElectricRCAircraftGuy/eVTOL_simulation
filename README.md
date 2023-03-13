@@ -22,7 +22,7 @@ a crude simulator to simulate some battery usage, range, recharging and stuff
 <a id="todo"></a>
 # TODO:
 
-1. [ ] break apart into multiple modules, each with a header and source file.
+1. [x] break apart into multiple modules, each with a header and source file.
 1. [nah] add setters and getters, perhaps; nah.
 1. (optional) add namespaces to modules
 

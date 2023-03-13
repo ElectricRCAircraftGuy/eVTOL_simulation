@@ -14,6 +14,9 @@ General utilities module
 #include <cstdio>
 
 
+#define SECONDS_PER_HR 3600UL
+
+
 /// Debug printf function.
 /// See https://stackoverflow.com/a/67667132/4561887
 #ifdef DEBUG

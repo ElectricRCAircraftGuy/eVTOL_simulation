@@ -5,7 +5,7 @@ Vehicle class module
 #pragma once
 
 // local includes
-// NA
+#include "utils.h"
 
 // Linux includes
 // NA
@@ -13,9 +13,6 @@ Vehicle class module
 // C++ includes
 #include <iostream>
 #include <string>
-
-
-#define SECONDS_PER_HR 3600UL
 
 
 struct Vehicle_type_stats
