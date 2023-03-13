@@ -60,9 +60,13 @@ struct Vehicle_type
     Vehicle_type_stats stats;
 
     // constructor
-    Vehicle_type(std::string name_, double cruise_speed_mph_, double battery_capacity_kwh_,
-                 double time_to_charge_hrs_, double energy_used_kwh_per_mile_,
-                 uint32_t passengers_per_vehicle_, double prob_fault_per_hr_);
+    Vehicle_type(std::string name_,
+                 double cruise_speed_mph_,
+                 double battery_capacity_kwh_,
+                 double time_to_charge_hrs_,
+                 double energy_used_kwh_per_mile_,
+                 uint32_t passengers_per_vehicle_,
+                 double prob_fault_per_hr_);
 
     void print() const;
 };

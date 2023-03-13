@@ -131,11 +131,13 @@ TEST_F(SimulationTestFixture, EndToEndTest)
     for (size_t i = 0; i < simulation._vehicles.size(); i++)
     {
         const Vehicle_stats& stats = simulation._vehicles[i].stats;
-        EXPECT_LE(simulation_duration_hrs, stats.flight_time_hrs + stats.wait_time_hrs
-                                               + stats.charge_time_hrs + allowed_delta_hrs)
+        EXPECT_LE(
+            simulation_duration_hrs,
+            stats.flight_time_hrs + stats.wait_time_hrs + stats.charge_time_hrs + allowed_delta_hrs)
             << "i = " << i << "\n";
-        EXPECT_GE(simulation_duration_hrs, stats.flight_time_hrs + stats.wait_time_hrs
-                                               + stats.charge_time_hrs - allowed_delta_hrs)
+        EXPECT_GE(
+            simulation_duration_hrs,
+            stats.flight_time_hrs + stats.wait_time_hrs + stats.charge_time_hrs - allowed_delta_hrs)
             << "i = " << i << "\n";
     }
 }
@@ -150,9 +152,11 @@ TEST(Simulation, TrivialEndToEnd)
 
     Simulation simulation{num_chargers, simulation_duration_hrs, simulation_step_size_hrs};
 
-    simulation.add_vehicle_type({"Alpha", 120, 320, 0.6, 1.6, 4, 0.25});
-    simulation.add_vehicle_type({"Bravo", 100, 100, 0.2, 1.5, 5, 0.10});
-    simulation.add_vehicle_type({"Charlie", 160, 220, 0.8, 2.2, 3, 0.05});
+    // clang-format off
+    simulation.add_vehicle_type({"Alpha",    120, 320, 0.6,  1.6, 4, 0.25});
+    simulation.add_vehicle_type({"Bravo",    100, 100, 0.2,  1.5, 5, 0.10});
+    simulation.add_vehicle_type({"Charlie",  160, 220, 0.8,  2.2, 3, 0.05});
+    // clang-format on
 
     // simulation.print_vehicle_types(); // debugging
 

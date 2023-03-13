@@ -1,6 +1,7 @@
 #include "simulation.h"
 
-Simulation::Simulation(uint32_t num_chargers, double simulation_duration_hrs,
+Simulation::Simulation(uint32_t num_chargers,
+                       double simulation_duration_hrs,
                        double simulation_step_size_hrs) :
     _num_chargers{num_chargers},
     _simulation_duration_hrs{simulation_duration_hrs},
@@ -83,10 +84,15 @@ void Simulation::run()
         DEBUG_PRINTF("%3lu: %10s, num_flights = %u, flight_time_hrs = %f, distance_miles = %f, "
                      "num_times_waiting = %u, wait_time_hrs = %f, num_charges = %u, "
                      "charge_time_hrs = %f, flight+wait+charge-time(hrs) = %f, num_faults = %u\n",
-                     i, vehicle.type->name.c_str(), vehicle.stats.num_flights,
-                     vehicle.stats.flight_time_hrs, vehicle.stats.distance_miles,
-                     vehicle.stats.num_times_waiting, vehicle.stats.wait_time_hrs,
-                     vehicle.stats.num_charges, vehicle.stats.charge_time_hrs,
+                     i,
+                     vehicle.type->name.c_str(),
+                     vehicle.stats.num_flights,
+                     vehicle.stats.flight_time_hrs,
+                     vehicle.stats.distance_miles,
+                     vehicle.stats.num_times_waiting,
+                     vehicle.stats.wait_time_hrs,
+                     vehicle.stats.num_charges,
+                     vehicle.stats.charge_time_hrs,
                      vehicle.stats.flight_time_hrs + vehicle.stats.wait_time_hrs
                          + vehicle.stats.charge_time_hrs,
                      vehicle.stats.num_faults);
@@ -150,10 +156,14 @@ void Simulation::print_results()
                "    total_num_passenger_miles        = %f\n\n",
                vehicle_type.name.c_str(),
                // extra data
-               vehicle_type.stats.num_vehicles, vehicle_type.stats.total_num_flights,
-               vehicle_type.stats.total_flight_time_hrs, vehicle_type.stats.total_distance_miles,
-               vehicle_type.stats.total_num_charges, vehicle_type.stats.total_charge_time_hrs,
-               vehicle_type.stats.total_num_times_waiting, vehicle_type.stats.total_wait_time_hrs,
+               vehicle_type.stats.num_vehicles,
+               vehicle_type.stats.total_num_flights,
+               vehicle_type.stats.total_flight_time_hrs,
+               vehicle_type.stats.total_distance_miles,
+               vehicle_type.stats.total_num_charges,
+               vehicle_type.stats.total_charge_time_hrs,
+               vehicle_type.stats.total_num_times_waiting,
+               vehicle_type.stats.total_wait_time_hrs,
                vehicle_type.stats.total_flight_time_hrs + vehicle_type.stats.total_charge_time_hrs
                    + vehicle_type.stats.total_wait_time_hrs,
                (double)(vehicle_type.stats.total_num_faults) / vehicle_type.stats.num_vehicles,
@@ -162,7 +172,8 @@ void Simulation::print_results()
                vehicle_type.stats.avg_flight_time_per_flight_hrs,
                vehicle_type.stats.avg_distance_per_flight_miles,
                vehicle_type.stats.avg_charge_time_per_session_hrs,
-               vehicle_type.stats.total_num_faults, vehicle_type.stats.total_num_passenger_miles);
+               vehicle_type.stats.total_num_faults,
+               vehicle_type.stats.total_num_passenger_miles);
     }
 }
 

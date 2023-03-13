@@ -29,7 +29,8 @@ class Simulation
 {
 public:
     // constructor
-    Simulation(uint32_t num_chargers, double simulation_duration_hrs,
+    Simulation(uint32_t num_chargers,
+               double simulation_duration_hrs,
                double simulation_step_size_hrs);
 
     // returns true if successful and false otherwise
