@@ -1,6 +1,6 @@
 # eVTOL_simulation
 
-C++ homework problem: a simulator to simulate some eVTOL aircraft flying around to see how they perform carrying passengers when limited chargers are available and they all have different specs. 
+C++ skills demonstration: a simulator to simulate some eVTOL aircraft flying around to see how they perform carrying passengers when limited chargers are available and they all have different specs. 
 
 [Problem description](https://github.com/ElectricRCAircraftGuy/eVTOL_simulation/raw/main/eVtol%20Simulation%20Problem%20-%20AnyTimeDomain%202.odt)
 
