@@ -51,6 +51,8 @@ Next:
     - Each vehicle instantaneously reaches Cruise Speed
     - Each vehicle is airborne for the full use of the battery, and is immediately in line for the
       charger after running out of battery power.
+    - Chargers are a scarce resoure, as there are only 3 of them, so vehicles must wait in line if they are all taken. 
+    - The simulation will cover 20 vehicles randomly selected from 5 different companies, flying and charging continuously, as needed, for 3 hours.
 
 1. Additional Assumptions:
     - faults can only occur during **flying**, NOT during waiting for a charger, or charging.
