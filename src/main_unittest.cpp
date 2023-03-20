@@ -19,6 +19,7 @@ https://github.com/google/googletest/blob/main/docs/reference/assertions.md#expe
 #include "simulation_params.h"
 
 // 3rd-party library includes
+#include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
 // Linux includes
@@ -26,6 +27,19 @@ https://github.com/google/googletest/blob/main/docs/reference/assertions.md#expe
 
 // C++ includes
 // NA
+
+
+/// Expect or assert that value `val` is within the range of `min` to `max`,
+/// inclusive. ie: `val` is tested to be >= `min` and <= `max`.
+/// See:
+/// 1. googletest `matchers.md` document under the "Composite Matchers" section,
+///    here:
+///    https://github.com/google/googletest/blob/main/docs/reference/matchers.md#composite-matchers
+/// 1. [My answer with this code] https://stackoverflow.com/a/75786774/4561887
+#define EXPECT_RANGE(val, min, max) EXPECT_THAT((val), \
+    ::testing::AllOf(::testing::Ge((min)), ::testing::Le((max))))
+#define ASSERT_RANGE(val, min, max) ASSERT_THAT((val), \
+    ::testing::AllOf(::testing::Ge((min)), ::testing::Le((max))))
 
 /// Test fixture class; it is a friend to `class Simulation`, so it can access its private members
 /// to test them!
@@ -132,14 +146,11 @@ TEST_F(SimulationTestFixture, EndToEndTest)
     for (size_t i = 0; i < simulation._vehicles.size(); i++)
     {
         const Vehicle_stats& stats = simulation._vehicles[i].stats;
-        EXPECT_LE(
+        EXPECT_RANGE(
             simulation_duration_hrs,
-            stats.flight_time_hrs + stats.wait_time_hrs + stats.charge_time_hrs + allowed_delta_hrs)
-            << "i = " << i << "\n";
-        EXPECT_GE(
-            simulation_duration_hrs,
-            stats.flight_time_hrs + stats.wait_time_hrs + stats.charge_time_hrs - allowed_delta_hrs)
-            << "i = " << i << "\n";
+            stats.flight_time_hrs + stats.wait_time_hrs + stats.charge_time_hrs - allowed_delta_hrs,
+            stats.flight_time_hrs + stats.wait_time_hrs + stats.charge_time_hrs + allowed_delta_hrs
+            ) << "i = " << i << "\n";
     }
 }
 
@@ -178,21 +189,20 @@ TEST(Simulation, TrivialEndToEnd)
     // Alpha
     stats = &(simulation._vehicle_types[0].stats);
     EXPECT_EQ(stats->total_num_flights, 2);
-    EXPECT_LE(stats->total_num_passenger_miles, 1151.87 + allowed_error);
-    EXPECT_GE(stats->total_num_passenger_miles, 1151.87 - allowed_error);
+    EXPECT_RANGE(
+        stats->total_num_passenger_miles, 1151.87 - allowed_error, 1151.87 + allowed_error);
     // TODO: check for other expected values in `stats` here.
 
     // Bravo
     stats = &(simulation._vehicle_types[1].stats);
     EXPECT_EQ(stats->total_num_flights, 4);
-    EXPECT_LE(stats->total_num_passenger_miles, 1199.58 + allowed_error);
-    EXPECT_GE(stats->total_num_passenger_miles, 1199.58 - allowed_error);
+    EXPECT_RANGE(
+        stats->total_num_passenger_miles, 1199.58 - allowed_error, 1199.58 + allowed_error);
     // TODO: check for other expected values in `stats` here.
 
     // Charlie
     stats = &(simulation._vehicle_types[2].stats);
     EXPECT_EQ(stats->total_num_flights, 3);
-    EXPECT_LE(stats->total_num_passenger_miles, 671.60 + allowed_error);
-    EXPECT_GE(stats->total_num_passenger_miles, 671.60 - allowed_error);
+    EXPECT_RANGE(stats->total_num_passenger_miles, 671.60 - allowed_error, 671.60 + allowed_error);
     // TODO: check for other expected values in `stats` here.
 }
