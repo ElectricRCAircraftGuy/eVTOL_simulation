@@ -28,7 +28,6 @@ https://github.com/google/googletest/blob/main/docs/reference/assertions.md#expe
 // C++ includes
 // NA
 
-
 /// Expect or assert that value `val` is within the range of `min` to `max`,
 /// inclusive. ie: `val` is tested to be >= `min` and <= `max`.
 /// See:
@@ -36,10 +35,10 @@ https://github.com/google/googletest/blob/main/docs/reference/assertions.md#expe
 ///    here:
 ///    https://github.com/google/googletest/blob/main/docs/reference/matchers.md#composite-matchers
 /// 1. [My answer with this code] https://stackoverflow.com/a/75786774/4561887
-#define EXPECT_RANGE(val, min, max) EXPECT_THAT((val), \
-    ::testing::AllOf(::testing::Ge((min)), ::testing::Le((max))))
-#define ASSERT_RANGE(val, min, max) ASSERT_THAT((val), \
-    ::testing::AllOf(::testing::Ge((min)), ::testing::Le((max))))
+#define EXPECT_RANGE(val, min, max) \
+    EXPECT_THAT((val), ::testing::AllOf(::testing::Ge((min)), ::testing::Le((max))))
+#define ASSERT_RANGE(val, min, max) \
+    ASSERT_THAT((val), ::testing::AllOf(::testing::Ge((min)), ::testing::Le((max))))
 
 /// Test fixture class; it is a friend to `class Simulation`, so it can access its private members
 /// to test them!
@@ -149,8 +148,8 @@ TEST_F(SimulationTestFixture, EndToEndTest)
         EXPECT_RANGE(
             simulation_duration_hrs,
             stats.flight_time_hrs + stats.wait_time_hrs + stats.charge_time_hrs - allowed_delta_hrs,
-            stats.flight_time_hrs + stats.wait_time_hrs + stats.charge_time_hrs + allowed_delta_hrs
-            ) << "i = " << i << "\n";
+            stats.flight_time_hrs + stats.wait_time_hrs + stats.charge_time_hrs + allowed_delta_hrs)
+            << "i = " << i << "\n";
     }
 }
 
