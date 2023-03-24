@@ -70,6 +70,17 @@ void Simulation::run()
         // for all vehicles
         for (Vehicle& vehicle : _vehicles)
         {
+            // TODO: to make this application multi-threaded, spawn threads here to call
+            // `iterate()` rapidly, in different threads. Call either the number of threads equal
+            // to your number of CPUs, or the number of threads equal to the number of vehicles,
+            // whichever is smaller.
+            // - NB: use a mutex to protect `_num_chargers_available` in the
+            //   `try_to_charge()` function when it is read and decremented (the combination of
+            //   those two things must be made atomic), as well as in the `CHARGING` state when
+            //   it is incremented.
+            // - This shared resource of the `_num_chargers_available` must be shared among all
+            //   threads.
+            // - Note: making it a `std::atomic<uint32_t>` is not enough.
             iterate(&vehicle);
         }
     }
