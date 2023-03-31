@@ -1,8 +1,10 @@
 # eVTOL_simulation
 
-C++ skills demonstration: a simulator to simulate some eVTOL aircraft flying around to see how they perform carrying passengers when limited chargers are available and they all have different specs. 
+C++ skills demonstration: a simulator to simulate some eVTOL aircraft flying around to see how they perform carrying passengers when limited chargers are available and they all have different specs, such as range, recharge time, and number of passengers they can carry. 
 
-[Problem description](https://github.com/ElectricRCAircraftGuy/eVTOL_simulation/raw/main/eVtol%20Simulation%20Problem%20-%20AnyTimeDomain%202.odt)
+Since each simulation run injects randomness using [C++'s robust pseudo-random number generators](https://en.cppreference.com/w/cpp/numeric/random), the results of repeated runs of the simulation comprise a [Monte Carlo](https://en.wikipedia.org/wiki/Monte_Carlo_method) simulation.
+
+[Click here for the full problem description](https://github.com/ElectricRCAircraftGuy/eVTOL_simulation/raw/main/eVtol%20Simulation%20Problem%20-%20AnyTimeDomain%202.odt)
 
 
 # Table of Contents
